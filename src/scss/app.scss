@@ -1,0 +1,208 @@
+$base-color: royalblue;
+
+body,
+html {
+  box-sizing: border-box;
+  color: #171717;
+  font-family: arial;
+  font-weight: normal;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  // width: 100%;
+  margin: 0;
+  overflow: auto;
+  background-size: cover;
+  background-color: #e7e7ea;
+}
+
+body {
+  // overflow: auto;
+}
+
+main {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  overflow: scroll;
+  // background-color: #ffffff17;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  &[v-cloak] {
+    display: none;
+  }
+
+  .page {
+    flex-grow: 1;
+  }
+}
+
+header {
+  // position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  margin: 0;
+  border: none;
+  height: 100%;
+  width: 100%;
+  // max-width: 1350px;
+  // padding: 5%;
+  color: black;
+  padding: 0; // margin: 15px;
+  // transition: max-height 0.3s ease-out; // note that we're transitioning max-height, not height!
+  transition: all 0.6s ease-out; // note that we're transitioning max-height, not height!
+  box-shadow: #4446 0 0px 2px;
+  z-index: 20;
+
+  .title {
+    transition: font-size 0.5s ease; // note that we're transitioning max-height, not height!
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 0 15px;
+    .text {
+      flex: 1;
+      font-weight: bold;
+      vertical-align: middle;
+    }
+
+    .video {
+      // min-width: 639px;
+      // min-height: 470px;
+      background: #000e;
+      box-shadow: #4446 0 0px 2px;
+      object-fit: contain;
+
+    }
+  }
+  .button {
+    flex: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    // width: 100%;
+    button {
+      margin-left: 5px;
+    }
+  }
+
+  .input-div {
+    flex: 2;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px 20px;
+    margin-top: 5px;
+    // font-size: 1.2em;
+    font-weight: bold;
+
+    // .vs-input {
+    //   margin-left: 7px;
+    //   width: 100%;
+    //   color: #373737;
+    // }
+
+    input {
+      // margin-left: 7px;
+      width: 100%;
+      flex: 1;
+    }
+  }
+  .settings-btn {
+    position: relative;
+    padding: 5px;
+
+    .settings-drop {
+      // min-width: 200px;
+      min-height: 200px;
+      position: absolute;
+      top: 70px;
+      left: -250px;
+      right: 0;
+      margin-right: 10px;
+      border-radius: 7px;
+      background: #f7f7f7;
+
+
+      // visibility: hidden;
+      // opacity: 0;
+      // -prefixes-transition-property: opacity, visibility;
+      // -prefixes-transition-duration: .4s, 0s;
+      // -prefixes-transition-delay: 0s, .4s;
+    }
+  }
+
+}
+
+footer {
+  box-sizing: border-box;
+}
+
+#page-success {
+  // height: 100%;
+  min-width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  color: royalblue;
+  padding: 10px;
+  overflow: scroll;
+  flex-wrap: wrap;
+  z-index: 1;
+
+  .vid {
+    .label {
+      color: black;
+    }
+  }
+
+  &.dark {
+    background: transparent;
+    color: #d7d7d7;
+  }
+
+  a {
+    color: inherit;
+    font-size: inherit;
+  }
+  .btn-div {
+    flex: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 10px 0;
+    width: 100%;
+    // max-width: 640px;
+    background: #0003;
+    color: white;
+    .btn {
+      color: white;
+    }
+  }
+
+}
+
+
+#page-notfound {}
+
+#page-root {}
+@import "mobile";
+@import "vuesax";
+@import "animate";
+@import "chatroom";

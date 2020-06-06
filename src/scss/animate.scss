@@ -1,0 +1,67 @@
+.fade-enter,
+.fade-leave {
+  // visibility: hidden;
+  opacity: 0;
+  transition: all 0.5s ease-in;
+  // top: 100px;
+}
+
+.fade-transition {
+  // top: 70px;
+  // visibility: visible;
+  opacity: 1;
+}
+
+.dropdown-enter,
+.dropdown-leave-to {
+  transform: scaleY(0.9);
+  opacity: 0;
+}
+
+.dropdown-enter-to,
+.dropdown-leave {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.3s ease-out;
+  transform-origin: top left;
+}
+
+.slide-enter,
+.slide-leave-to {
+  transform: scaleY(0.5);
+  opacity: 0;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transform-origin: top;
+  transition: transform 0.4s ease-in-out;
+}
+//   .slide-enter, .slide-leave-to{
+//   transform: scaleY(0);
+// }
+.slide-fade-enter-active {
+  transition: all 0.3s ease;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+/* .slide-fade-leave-active below version 2.1.8 */
+.slide-fade-enter,
+.slide-fade-leave-to {
+  transform: translateY(10px);
+  opacity: 0;
+}
+
+.height-drop-enter, .height-drop-leave-to {
+  height: 0;
+}
+
+.height-drop-enter, .height-drop-leave-to {
+  height: 100%;
+}

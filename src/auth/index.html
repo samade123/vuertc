@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>My Digital CV</title>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+  <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/0.6.0/modern-normalize.min.css" integrity="sha256-a9JO7L1jGkja9va1xGMWEJspCfU/b9Vn5u/O5MdnKhw=" crossorigin="anonymous" />
+  <link href="https://cdn.jsdelivr.net/npm/vuesax/dist/vuesax.css" rel="stylesheet">
+  <link  rel="stylesheet" type="text/css" href="/text-security/text-security.css">
+  <link rel="stylesheet" type="text/css" href="/login/css" />
+  <!-- <link rel="stylesheet" type="text/css" href="./auth.css" /> -->
+
+
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+</head>
+
+<body>
+
+  <main id="app" v-cloak style="left: 0;">
+    <header>
+      <div> <i class="material-icons">book</i> My digital CV</div>
+    </header>
+  <div class="form">
+
+    <form class="card">
+      <div class="card-title">  <i class="material-icons">lock</i> Login</div>
+      <div class="form-group">
+        <label for="exampleInputEmail1"> <i class="material-icons">email</i>Email address</label>
+        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" label="Email">
+        <!-- <vs-input type="email" icon-no-border icon="email" class="inputx other text-light" id="exampleInputEmail1" aria-describedby="emailHelp" label="Email"> -->
+        <!--  -->
+
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1"> <i class="material-icons">vpn_key</i>Password</label>
+        <!-- <vs-input type="number" icon-no-border icon="vpn_key" pattern="[0-9]*" inputmode="numeric" class="inputx" id="exampleInputPassword1" label="Pin"> -->
+        <input type="number" pattern="[0-9]*" inputmode="numeric" class="form-control password" id="exampleInputPassword1" label="Pin">
+      </div>
+      <div class="form-group">
+        <input type="checkbox" class="" id="exampleCheck1">
+        <label class="" for="exampleCheck1">Remember me</label>
+      </div>
+        <button class="btn btn-primary active"> <a href="/main">Login</a></button>
+    </form>
+  </div>
+<footer></footer>
+  </main>
+
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+     <script src="https://unpkg.com/vuesax"></script>
+     <script>
+       new Vue({
+         el: '#app'
+       })
+     </script>
+
+     <style lang="stylus">
+.default-input
+  .inputx
+    margin 10px
+</style>
+</body>
+
+</html>

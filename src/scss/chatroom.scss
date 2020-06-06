@@ -1,0 +1,30 @@
+.chat-div {
+  flex: 1;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  background: #00000033;
+  padding: 10px;
+  .chat-history {
+    flex: 1;
+    background: #ffffff33;
+    border-radius: 7px;
+    margin-bottom: 10px;
+  }
+  .chat-input {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+  }
+  .vs-input {
+    flex: 4;
+    // width: 80%;
+    margin: 0 5px;
+  }
+  .vs-button {
+    flex: 1;
+  }
+}

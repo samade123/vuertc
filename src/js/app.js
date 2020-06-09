@@ -58,17 +58,9 @@ var app = new Vue({
     },
     room: 'foo',
     message: false,
+    displayStream: false,
   },
   watch: {
-    currentURL() {
-      console.log("!£=")
-      if (this.currentURL.length > 0) {
-        setTimeout(() => {
-          this.show = true
-          console.log("delaylm;lm;lm;l")
-        }, 300)
-      } else this.show = false
-    }
   },
   methods: {
     testMedia() { //this checks camera lsit
@@ -86,7 +78,7 @@ var app = new Vue({
         this.maybeStart();
       }
     },
-    handleLocalMediaStreamError(error) {
+    handleLocalMediaStreamError(e) {
       alert('getUserMedia() error: ' + e.name);
     },
     stopCamera() {
@@ -151,7 +143,6 @@ var app = new Vue({
         pc.onicecandidate = this.handleIceCandidate;
         pc.onaddstream = this.handleRemoteStreamAdded;
         pc.onremovestream = this.handleRemoteStreamRemoved;
-
         console.log('Created RTCPeerConnnection');
       } catch (e) {
         console.log('Failed to create PeerConnection, exception: ' + e.message);
@@ -195,13 +186,8 @@ var app = new Vue({
       trace('Failed to create session description: ' + error.toString());
     },
     handleRemoteStreamAdded(event) {
-      console.log('Remote stream added.');
-      // if (this.isInitiator) {
-      //   this.dataChannel = pc.createDataChannel('photos');
-      //   this.onDataChannelCreated();
-      // }
-
-
+      console.log('Remote stream added.',event);
+     
       this.remoteStream = event.stream;
       this.remoteVideo.srcObject = this.remoteStream;
     },
@@ -234,6 +220,18 @@ var app = new Vue({
       console.log(obj)
       this.messages.push(obj);
       app.currentMessage = '';
+    },
+    shareScreen() {
+       navigator.mediaDevices.getDisplayMedia({
+        video: true
+      })
+      .then(mediaStream => {
+        console.log(this.$refs.screenShare)
+        this.$refs.screenShare.srcObject = mediaStream;
+        pc.addStream(mediaStream);
+      })
+      .catch(err => { console.error("Error:" + err); return null; });
+      
     },
   },
   mounted() {

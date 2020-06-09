@@ -1,68 +1,77 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <title>Responsive Site Inspo</title>
 
-<head>
-  <title>Responsive Site Inspo</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+        <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/0.6.0/modern-normalize.min.css" integrity="sha256-a9JO7L1jGkja9va1xGMWEJspCfU/b9Vn5u/O5MdnKhw=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css" />
+        <link rel="icon" type="image/png" href="./site/images/images.png" />
+        <!-- <link  rel="stylesheet" type="text/css" href="/text-security/text-security.css"> -->
+        <!-- <link rel="stylesheet" type="text/css" href="/style" /> -->
+        <!-- <link rel="stylesheet" type="text/css" href="./site/css/app.css"> -->
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-  <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/0.6.0/modern-normalize.min.css" integrity="sha256-a9JO7L1jGkja9va1xGMWEJspCfU/b9Vn5u/O5MdnKhw=" crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
-  <link rel="icon" type="image/png" href="./site/images/images.png">
-  <!-- <link  rel="stylesheet" type="text/css" href="/text-security/text-security.css"> -->
-  <!-- <link rel="stylesheet" type="text/css" href="/style" /> -->
-  <!-- <link rel="stylesheet" type="text/css" href="./site/css/app.css"> -->
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+    </head>
 
-  <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-</head>
+    <body>
+        <main v-cloak style="left: 0;">
+            <div class="main" :style="{height: currentPage == pages.header ? '100%' : headerHeight()}" ref="header" :class="currentPage == pages.header ? 'active' : false">
+                <div class="text" v-if="currentPage == pages.chatting" :style="{fontSize: currentPage == pages.chatting ? '16px' : '35px'}">
+                    WebRTC Test
+                </div>
+                <div class="title" v-if="currentPage == pages.header">
+                    <header>VUERTC</header>
+                      <div class="main-vid">
+                        <video class="video" autoplay playsinline width="630" height="470" ref="remoteVideo"></video>
+                        <div class="controls">
+                          <button class="btn" @click="stopCamera">Test Camera</button>
+                          <button class="btn" @click="shareScreen">Share Screen</button>
+                        </div>
+                      </div>
 
-<body>
-  <main v-cloak style="left: 0;">
-    <header :style="{height: currentPage == pages.header ? '100%' : headerHeight()}" ref="header" :class="currentPage == pages.header ? 'active' : false">
+                    <div class="quick-glance">
+                      <div class="localCam">
+                        <video class="video" autoplay playsinline height="150px" ref="localVideo"></video>
+                        <div @click="stopCamera">Local Camera</div>
+                      </div>
+                      <div class="localCam">
+                        <!-- <video class="video" :src="displayStream ? URL.createObjectURL(displayStream) : false;"  autoplay playsinline height="150px" ref="screenShare"></video> -->
+                        <video class="video"  autoplay playsinline height="150px" ref="screenShare"></video>
+                        <div @click="stopCamera">Your Screen</div>
 
-      <div class="text"   v-if="currentPage == pages.chatting" :style="{fontSize: currentPage == pages.chatting ? '16px' : '35px'}">
-        WebRTC Test
-      </div>
-      <div class="title" v-if="currentPage == pages.header">
-        <!-- <div class="video"> -->
-          <video class="video" autoplay playsinline width="630" height="470" ref="remoteVideo"></video>
-        <!-- </div> -->
-        <button class="btn" @click="stopCamera">Test Camera</button>
+                      </div>
+                        <!-- </div> -->
+                    </div>
+                </div>
 
-        <video class="video" autoplay playsinline width="630" height="470" ref="localVideo"></video>
-        <!-- </div> -->
-        <button class="btn" @click="stopCamera">Local Camera</button>
-
-      </div>
-
-      <!-- <div v-if="currentPage == pages.header"  class="input-div wow bounceInUp" data-wow-duration="1.3s">
+                <!-- <div v-if="currentPage == pages.header"  class="input-div wow bounceInUp" data-wow-duration="1.3s">
         <vs-input type="text" class="form-control">
         <button class="btn" @click="currentPage = pages.chatting">Start Chat</button>
       </div> -->
 
-      <chat-room :current-message="currentMessage" :show-chat="message" :messages="messages" @send="dcSendText($event)"></chat-room>
-    </header>
+                <chat-room :current-message="currentMessage" :show-chat="message" :messages="messages" @send="dcSendText($event)"></chat-room>
+            </div>
 
-    <!-- <page-success v-if="currentPage == pages.chatting" v-on:stop="stopCamera" ref="success" :media-stream="localStream" :current-url="currentURL" :allow-scroll="allowScroll" :show="show"></page-success> -->
-  </main>
+            <!-- <page-success v-if="currentPage == pages.chatting" v-on:stop="stopCamera" ref="success" :media-stream="localStream" :current-url="currentURL" :allow-scroll="allowScroll" :show="show"></page-success> -->
+        </main>
 
-  <!-- <script src="/socket.io/socket.io.js"></script> -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+        <!-- <script src="/socket.io/socket.io.js"></script> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
 
+        <script src="https://unpkg.com/@ungap/custom-elements-builtin"></script>
+        <script type="module" src="https://unpkg.com/x-frame-bypass"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js" integrity="sha256-z6FznuNG1jo9PP3/jBjL6P3tvLMtSwiVAowZPOgo56U=" crossorigin="anonymous"></script>
+        <script>
+            new WOW().init();
 
-  <script src="https://unpkg.com/@ungap/custom-elements-builtin"></script>
-  <script type="module" src="https://unpkg.com/x-frame-bypass"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js" integrity="sha256-z6FznuNG1jo9PP3/jBjL6P3tvLMtSwiVAowZPOgo56U=" crossorigin="anonymous"></script>
-  <script>
-    new WOW().init();
-
-    function logScrollPos() {
-      // console.log(document.getElementsByClassName("main-body")[0].scrollTop)
-      sessionStorage.setItem('scrollPosition', document.getElementsByClassName("main-body")[0].scrollTop);
-    }
-  </script>
-</body>
-
+            function logScrollPos() {
+                // console.log(document.getElementsByClassName("main-body")[0].scrollTop)
+                sessionStorage.setItem("scrollPosition", document.getElementsByClassName("main-body")[0].scrollTop);
+            }
+        </script>
+    </body>
 </html>

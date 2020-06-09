@@ -27,8 +27,8 @@ export default {
     },
     methods: {
         setRoom(room) {
-            this.$emit("setRoom", room);
-            console.log("comp send",room);
+            this.$emit("room", room);
+            console.log("room: ",room);
         },
     },
     created() {},

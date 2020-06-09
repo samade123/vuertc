@@ -1,6 +1,5 @@
 <template>
     <div class="chat-div">
-        {{card}}
         <div v-if="card" class="chat-card">
             <div class="top">
                 <div class="profile">

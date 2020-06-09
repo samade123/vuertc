@@ -23,11 +23,8 @@
           <div class="main-wrapper">
             <div class="main">
               <!-- <div class="main"  :class="currentPage == pages.header ? 'active' : false"> -->
-                <div class="text" v-if="currentPage == pages.chatting" :style="{fontSize: currentPage == pages.chatting ? '16px' : '35px'}">
-                    WebRTC Test
-                </div>
-                <room-strip @set-room="setRoom($event)"></room-strip>
-                <div class="title" v-if="(windowWidth > 600 ) && (currentPage == pages.chatting)">
+                <room-strip @room="setRoom($event)" v-if=" !(windowWidth < 600 && currentPage==pages.chatting)"></room-strip>
+                <div class="title" v-if="(windowWidth > 2000 ) && (currentPage == pages.chatting)">
                     <header>VUERTC</header>
                       <div class="main-vid">
                         <video class="video" autoplay playsinline width="630" height="470" ref="remoteVideo"></video>
@@ -52,8 +49,7 @@
                     </div>
                   </div>
 
-                <chat-room v-if="windowWidth > 600" :current-message="currentMessage" :show-chat="message" :messages="messages" :card="currentPage==pages.chatting" @send="dcSendText($event)"></chat-room>
-                {{currentPage}}
+                <chat-room v-if="windowWidth > 600 || (windowWidth < 600 && currentPage==pages.chatting)" :current-message="currentMessage" :show-chat="message" :messages="messages" :card="currentPage==pages.chatting" @send="dcSendText($event)"></chat-room>
             </div>
           </div>
 

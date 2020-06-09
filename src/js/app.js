@@ -251,9 +251,9 @@ var app = new Vue({
 
     },
     setRoom(room) {
+      this.currentPage = this.pages.chatting
       this.currentRoom = room;
       console.log(this.currentRoom, this.pages.chating)
-      this.currentPage = this.pages.chatting
     }
   },
   mounted() {

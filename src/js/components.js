@@ -4,3 +4,4 @@ Vue.component('page-notfound', require('./components/pages/notfound.vue').defaul
 Vue.component('page-fail', require('./components/pages/fail.vue').default);
 Vue.component('paypal', require('./components/paypal.vue').default);
 Vue.component('chat-room', require('./components/chatroom.vue').default);
+Vue.component('room-strip', require('./components/room.vue').default);

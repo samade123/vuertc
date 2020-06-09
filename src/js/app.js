@@ -34,10 +34,12 @@ var turnReady;
 var app = new Vue({
   el: 'main',
   data: {
+    currentRoom: false,
+    test: false,
     mediaStreamConstraints: {
       video: true,
     },
-    messages: [{data: '{"message":"asdsadasd","timestamp":"2020-06-06T13:10:59.326Z"}', timestamp: 341413, }],
+    messages: [{ data: '{"message":"asdsadasd","timestamp":"2020-06-06T13:10:59.326Z"}', timestamp: 341413, }],
     currentMessage: "",
     pages: {
       header: "header",
@@ -178,10 +180,10 @@ var app = new Vue({
         this.onCreateSessionDescriptionError
       );
     },
-    renegotiate(){
+    renegotiate() {
       console.log("renogiating")
       // if (this.isInitiator){
-        pc.createOffer(this.setLocalAndSendMessage, this.handleCreateOfferError);
+      pc.createOffer(this.setLocalAndSendMessage, this.handleCreateOfferError);
       // } 
     },
     setLocalAndSendMessage(sessionDescription) {
@@ -193,10 +195,18 @@ var app = new Vue({
       trace('Failed to create session description: ' + error.toString());
     },
     handleRemoteStreamAdded(event) {
-      console.log('Remote stream added.',event);
-     
-      this.remoteStream = event.stream;
-      this.remoteVideo.srcObject = this.remoteStream;
+      console.log('Remote stream added.', event);
+      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", this.remoteStream)
+      if (this.test) {
+        this.remoteScreen = event.stream;
+        this.screenShare.srcObject = this.remoteScreen;
+      }
+      else {
+        this.remoteStream = event.stream;
+        this.remoteVideo.srcObject = this.remoteStream;
+      }
+
+     this.test = true;
     },
     handleRemoteStreamRemoved(event) {
       console.log('Remote stream removed. Event: ', event);
@@ -229,27 +239,31 @@ var app = new Vue({
       app.currentMessage = '';
     },
     shareScreen() {
-       navigator.mediaDevices.getDisplayMedia({
+      navigator.mediaDevices.getDisplayMedia({
         video: true
       })
-      .then(mediaStream => {
-        console.log(this.$refs.screenShare)
-        this.$refs.screenShare.srcObject = mediaStream;
-        pc.addStream(mediaStream);
-      })
-      .catch(err => { console.error("Error:" + err); return null; });
-      
+        .then(mediaStream => {
+          console.log(this.$refs.screenShare)
+          this.$refs.screenShare.srcObject = mediaStream;
+          pc.addStream(mediaStream);
+        })
+        .catch(err => { console.error("Error:" + err); return null; });
+
     },
+    setRoom(room) {
+      this.currentRoom = room;
+      console.log(this.currentRoom, this.pages.chating)
+      this.currentPage = this.pages.chatting
+    }
   },
   mounted() {
     socket = io.connect();
     this.room = prompt('Enter room name:');
 
     this.joinRoom()
-    // this.localVideo = document.querySelector('#localVideo');
     this.localVideo = this.$refs.localVideo
     this.remoteVideo = this.$refs.remoteVideo
-    // this.remoteVideo = document.querySelector('#remoteVideo');
+    this.screenShare = this.$refs.screenShare
     this.testMedia()
     if (location.hostname !== 'localhost') {
       requestTurn(

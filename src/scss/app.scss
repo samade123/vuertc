@@ -1,4 +1,5 @@
 $base-color: royalblue;
+$border-color: #d7d7d7dd;
 
 body,
 html {
@@ -12,10 +13,10 @@ html {
   right: 0;
   height: 100%;
   // width: 100%;
-  margin: 0;
+  margin: 0 auto;
   overflow: auto;
   background-size: cover;
-  background-color: #e7e7e7;
+  background-color: #f9f9f9;
 }
 
 body {
@@ -26,16 +27,13 @@ main {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   height: 100%;
-  width: 100%;
-  overflow: scroll;
-  // background-color: #ffffff17;
-  position: absolute;
-  top: 0;
-  left: 0;
-
+  width: 90%;
+  max-width: 1200px;
+  overflow: hidden;
+  margin: 0 auto;
   &[v-cloak] {
     display: none;
   }
@@ -43,25 +41,48 @@ main {
   .page {
     flex-grow: 1;
   }
+  header {
+    flex: 0;
+    font-size: 22px;
+    width: 100%;
+    text-align: center;
+    &.top {
+      // height: 40px;
+      box-shadow: #4446 0 0px 2px;
+      margin-bottom: 10px;
+
+    }
+  }
+}
+div.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
 }
 
 div.main {
   // position: relative;
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  margin: 0;
+  // margin: 20px 0;
   border: none;
-  height: 100%;
+  height: 95%;
   width: 100%;
-  // max-width: 1350px;
-  // padding: 5%;
+  padding: 10px 0;
+ 
   color: black;
   padding: 0; // margin: 15px;
   // transition: max-height 0.3s ease-out; // note that we're transitioning max-height, not height!
   transition: all 0.6s ease-out; // note that we're transitioning max-height, not height!
-  box-shadow: #4446 0 0px 2px;
+  // box-shadow: #4446 0 0px 2px;
+  border: 2px $border-color solid;
+  border-radius: 7px;
   z-index: 20;
 
   .title {
@@ -90,7 +111,7 @@ div.main {
       // min-width: 639px;
       // min-height: 470px;
       background: #000e;
-      box-shadow: #4446 0 0px 2px;
+      // box-shadow: #4446 0 0px 2px;
       // object-fit: contain;
     }
     .quick-glance {
@@ -167,12 +188,6 @@ div.main {
       margin-right: 10px;
       border-radius: 7px;
       background: #f7f7f7;
-
-      // visibility: hidden;
-      // opacity: 0;
-      // -prefixes-transition-property: opacity, visibility;
-      // -prefixes-transition-duration: .4s, 0s;
-      // -prefixes-transition-delay: 0s, .4s;
     }
   }
 }
@@ -189,7 +204,8 @@ footer {
 
 #page-root {
 }
-@import "mobile";
 @import "vuesax";
 @import "animate";
 @import "chatroom";
+@import "room-strip";
+@import "mobile";

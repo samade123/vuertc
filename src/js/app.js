@@ -143,6 +143,7 @@ var app = new Vue({
         pc.onicecandidate = this.handleIceCandidate;
         pc.onaddstream = this.handleRemoteStreamAdded;
         pc.onremovestream = this.handleRemoteStreamRemoved;
+        pc.onnegotiationneeded = this.renegotiate;
         console.log('Created RTCPeerConnnection');
       } catch (e) {
         console.log('Failed to create PeerConnection, exception: ' + e.message);
@@ -176,6 +177,12 @@ var app = new Vue({
         this.setLocalAndSendMessage,
         this.onCreateSessionDescriptionError
       );
+    },
+    renegotiate(){
+      console.log("renogiating")
+      // if (this.isInitiator){
+        pc.createOffer(this.setLocalAndSendMessage, this.handleCreateOfferError);
+      // } 
     },
     setLocalAndSendMessage(sessionDescription) {
       pc.setLocalDescription(sessionDescription);

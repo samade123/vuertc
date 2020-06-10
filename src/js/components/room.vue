@@ -1,10 +1,11 @@
 <template>
     <div class="room-strip">
+        <header class="room-header"><!-- <i class="material-icons">meeting_room</i> --> <span class="header-text">Rooms</span></header>
         <div v-for="room in rooms" :key="room.name" @click="setRoom(room)" class="room-space">
             <vs-avatar color="primary" />
             <div class="room-sub-space">
-            <div class="room-name">{{ room.name }}</div>
-            <div class="room-desc">{{ room.desc }}</div>
+                <div class="room-name">{{ room.name }}</div>
+                <div class="room-desc">{{ room.desc }}</div>
             </div>
         </div>
     </div>
@@ -22,13 +23,19 @@ export default {
     },
     data() {
         return {
-            rooms: [{ name: "John" , desc: "Hi!!"}, { name: "Phill",  desc: "Hi!!" }, { name: "YAsmin",  desc: "Hi!!" }, { name: "Richard",  desc: "Hi!!" }, { name: "Liam",  desc: "Hi!!" }],
+            rooms: [
+                { name: "John", desc: "Hi!!" },
+                { name: "Phill", desc: "Hi!!" },
+                { name: "YAsmin", desc: "Hi!!" },
+                { name: "Richard", desc: "Hi!!" },
+                { name: "Liam", desc: "Hi!!" },
+            ],
         };
     },
     methods: {
         setRoom(room) {
             this.$emit("room", room);
-            console.log("room: ",room);
+            console.log("room: ", room);
         },
     },
     created() {},

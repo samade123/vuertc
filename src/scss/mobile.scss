@@ -1,8 +1,20 @@
 @media only screen and (max-width: 600px) {
- .room-strip {
-   border-right: none;
- }
- div.main {
-  border: none;
- }
+  .room-strip {
+    border-right: none;
+  }
+  div.main {
+    border: none;
+  }
+  .chat-div {
+    .waiting {
+      display: none;
+    }
+    .chat-card {
+      .bottom {
+        .settings {
+          width: 100%;
+        }
+      }
+    }
+  }
 }

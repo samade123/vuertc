@@ -35,7 +35,7 @@
 
     }
   }
- .room-space{
+ .room-space {
   //  background: white;
   display: flex;
   flex-direction: row;
@@ -49,6 +49,9 @@
   &:hover {
     background: #e7e7e7;
     cursor: pointer;
+  }
+  &.selected {
+    background: #00000022;
   }
   .room-sub-space{
     padding-left: 5px;

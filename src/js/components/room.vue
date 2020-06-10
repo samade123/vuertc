@@ -1,7 +1,10 @@
 <template>
     <div class="room-strip">
-        <header class="room-header"><!-- <i class="material-icons">meeting_room</i> --> <span class="header-text">Rooms</span></header>
-        <div v-for="room in rooms" :key="room.name" @click="setRoom(room)" class="room-space">
+        <header class="room-header">
+            <!-- <i class="material-icons">meeting_room</i> -->
+            <span class="header-text">Rooms</span>
+        </header>
+        <div v-for="room in rooms" :key="room.name" @click="setRoom(room)" :class="room.selected ? 'selected' : 'false'" class="room-space">
             <vs-avatar color="primary" />
             <div class="room-sub-space">
                 <div class="room-name">{{ room.name }}</div>
@@ -34,8 +37,10 @@ export default {
     },
     methods: {
         setRoom(room) {
+            room.selected = true;
             this.$emit("room", room);
             console.log("room: ", room);
+            return room
         },
     },
     created() {},

@@ -49,7 +49,7 @@
 }
 
 .slide-fade-leave-active {
-  transition: all 0.8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
 }
 /* .slide-fade-leave-active below version 2.1.8 */
 .slide-fade-enter,
@@ -58,10 +58,15 @@
   opacity: 0;
 }
 
-.height-drop-enter, .height-drop-leave-to {
+.height-drop-enter,
+.height-drop-leave-to {
+  // opacity: 0;
   height: 0;
+  transition: height 0.5s ease-in-out;
 }
 
-.height-drop-enter, .height-drop-leave-to {
+.height-drop-enter,
+.height-drop-leave-to {
   height: 100%;
+  // opacity: 1;
 }

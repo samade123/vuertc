@@ -58,9 +58,10 @@ var app = new Vue({
       offerToReceiveAudio: true,
       offerToReceiveVideo: true
     },
-    room: 'foo',
+    room: '',
     message: false,
     displayStream: false,
+    localStream: {},
   },
   watch: {
   },
@@ -73,7 +74,14 @@ var app = new Vue({
       console.log('Getting user media with constraints', this.mediaStreamConstraints);
 
       this.localStream = mediaStream;
-      this.localVideo.srcObject = this.localStream;
+      // this.localStream = null;
+      // this.localStream = mediaStream;
+      setTimeout(() => {
+        this.localVideo = document.getElementById("localVideo")
+        console.log(this.localVideo)
+  
+        this.localVideo.srcObject = this.localStream;
+      }, 1000);
 
       this.sendMessageToServer('got user media');
       if (this.isInitiator) {
@@ -81,7 +89,7 @@ var app = new Vue({
       }
     },
     handleLocalMediaStreamError(e) {
-      alert('getUserMedia() error: ' + e.name);
+      console.log('getUserMedia() error: ' + e.name, e);
     },
     stopCamera() {
       if (this.localStream) {
@@ -202,11 +210,12 @@ var app = new Vue({
         this.screenShare.srcObject = this.remoteScreen;
       }
       else {
+        this.remoteVideo = document.getElementById("remoteVideo")
         this.remoteStream = event.stream;
         this.remoteVideo.srcObject = this.remoteStream;
       }
 
-     this.test = true;
+      this.test = true;
     },
     handleRemoteStreamRemoved(event) {
       console.log('Remote stream removed. Event: ', event);
@@ -224,8 +233,10 @@ var app = new Vue({
     stop() {
       console.log("stopped")
       this.isStarted = false;
-      pc.close();
-      pc = null;
+      if (pc) {
+        pc.close();
+        pc = null;
+      }
     },
     dcSendText(message) {
       console.log("sending!!!", message, this.dataChannel);
@@ -251,20 +262,28 @@ var app = new Vue({
 
     },
     setRoom(room) {
+      console.log()
+      if (this.room.length > 0  ) {
+        this.hangup()
+      }
       this.currentPage = this.pages.chatting
       this.currentRoom = room;
-      console.log(this.currentRoom, this.pages.chating)
+      this.room = this.currentRoom.name;
+      this.joinRoom()
+      this.maybeStart()
+
+      console.log("app js speaking", this.currentPage, this.currentRoom, this.pages.chatting)
     }
   },
   mounted() {
-    socket = io.connect();
-    this.room = prompt('Enter room name:');
+    socket = io.connect('http://localhost:8887/');
+    // this.room = prompt('Enter room name:');
 
-    this.joinRoom()
+    // this.joinRoom()
     this.localVideo = this.$refs.localVideo
     this.remoteVideo = this.$refs.remoteVideo
     this.screenShare = this.$refs.screenShare
-    this.testMedia()
+    // this.testMedia()
     if (location.hostname !== 'localhost') {
       requestTurn(
         'https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913'

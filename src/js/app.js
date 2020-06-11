@@ -15,7 +15,7 @@ Vue.use(Vuesax, {
 require('./components');
 var parse = require('url-parse');
 
-window.addEventListener('load', function () {
+window.addEventListener('load', function() {
   if (sessionStorage.getItem('scrollPosition') !== null)
     document.getElementsByClassName("main-body")[0].scrollTo({
       top: sessionStorage.getItem('scrollPosition'),
@@ -39,7 +39,10 @@ var app = new Vue({
     mediaStreamConstraints: {
       video: true,
     },
-    messages: [{ data: '{"message":"asdsadasd","timestamp":"2020-06-06T13:10:59.326Z"}', timestamp: 341413, }],
+    messages: [{
+      data: '{"message":"asdsadasd","timestamp":"2020-06-06T13:10:59.326Z"}',
+      timestamp: 341413,
+    }],
     currentMessage: "",
     pages: {
       header: "header",
@@ -63,8 +66,7 @@ var app = new Vue({
     displayStream: false,
     localStream: {},
   },
-  watch: {
-  },
+  watch: {},
   methods: {
     testMedia() { //this checks camera lsit
       navigator.mediaDevices.getUserMedia(this.mediaStreamConstraints)
@@ -85,7 +87,13 @@ var app = new Vue({
 
       this.sendMessageToServer('got user media');
       if (this.isInitiator) {
-        this.maybeStart();
+        if (this.isStarted) {
+          pc.addStream(this.localStream);
+        } else {
+          this.maybeStart();
+        }
+      } else if (this.isStarted) {
+        pc.addStream(this.localStream);
       }
     },
     handleLocalMediaStreamError(e) {
@@ -103,6 +111,7 @@ var app = new Vue({
       if (this.room !== '') {
         socket.emit('create or join', this.room);
         console.log('Attempted to create or  join room', this.room);
+        this.maybeStart();
       }
     },
     sendMessageToServer(message) {
@@ -110,11 +119,14 @@ var app = new Vue({
       socket.emit('message', message);
     },
     maybeStart() {
-      console.log('>>>>>>> maybeStart() ', this.isStarted, this.localStream, this.isChannelReady);
-      if (!this.isStarted && typeof this.localStream !== 'undefined' && this.isChannelReady) {
+      console.log('>>>>>>> maybeStart() this.isStarted: ', this.isStarted, "localStream: ", this.localStream, "channelReady: ", this.isChannelReady);
+      if (!this.isStarted && this.isChannelReady) {
         console.log('>>>>>> creating peer connection');
         this.createPeerConnection();
-        pc.addStream(this.localStream);
+        // if (typeof this.localStream !== 'undefined') {
+        //   console.log("localstream", this.localStream)
+        //   pc.addStream(this.localStream);
+        // }
         this.isStarted = true;
         console.log('isInitiator', this.isInitiator);
         if (this.isInitiator) {
@@ -208,8 +220,7 @@ var app = new Vue({
       if (this.test) {
         this.remoteScreen = event.stream;
         this.screenShare.srcObject = this.remoteScreen;
-      }
-      else {
+      } else {
         this.remoteVideo = document.getElementById("remoteVideo")
         this.remoteStream = event.stream;
         this.remoteVideo.srcObject = this.remoteStream;
@@ -246,33 +257,45 @@ var app = new Vue({
       }
       this.dataChannel.send(JSON.stringify(obj));
       console.log(obj)
+      obj.left = true
       this.messages.push(obj);
       app.currentMessage = '';
     },
     shareScreen() {
       navigator.mediaDevices.getDisplayMedia({
-        video: true
-      })
+          video: true
+        })
         .then(mediaStream => {
           console.log(this.$refs.screenShare)
           this.$refs.screenShare.srcObject = mediaStream;
           pc.addStream(mediaStream);
         })
-        .catch(err => { console.error("Error:" + err); return null; });
+        .catch(err => {
+          console.error("Error:" + err);
+          return null;
+        });
 
     },
     setRoom(room) {
       console.log()
-      if (this.room.length > 0  ) {
+      if (this.room.length > 0) {
         this.hangup()
       }
       this.currentPage = this.pages.chatting
       this.currentRoom = room;
       this.room = this.currentRoom.name;
       this.joinRoom()
-      this.maybeStart()
+      // if (!this.currentRoom) {
+      // this.maybeStart()
+      // }
 
       console.log("app js speaking", this.currentPage, this.currentRoom, this.pages.chatting)
+    },
+    start() {
+      console.log("startingasdasd")
+      if (!this.isStarted) {
+        this.maybeStart();
+      }
     }
   },
   mounted() {
@@ -294,29 +317,29 @@ var app = new Vue({
 
 //////////////////////////////////////////////Socket io turn server client stuff////////////////////////////////////////////////////////////////////////////////
 
-socket.on('created', function (room) {
+socket.on('created', function(room) {
   console.log('Created room ' + room);
   app.isInitiator = true;
   console.log(app.isInitiator);
 
 });
 
-socket.on('full', function (room) {
+socket.on('full', function(room) {
   console.log('Room ' + room + ' is full');
 });
 
-socket.on('join', function (room) {
+socket.on('join', function(room) {
   console.log('Another peer made a request to join room ' + room);
   console.log('This peer is the initiator of room ' + room + '!');
   app.isChannelReady = true;
 });
 
-socket.on('joined', function (room) {
+socket.on('joined', function(room) {
   console.log('joined: ' + room);
   app.isChannelReady = true;
 });
 
-socket.on('log', function (array) {
+socket.on('log', function(array) {
   console.log.apply(console, array);
 });
 
@@ -329,7 +352,7 @@ function sendMessage(message) {
 }
 
 // This client receives a message
-socket.on('message', function (message) {
+socket.on('message', function(message) {
   console.log('Client received message:', message);
   if (message === 'got user media') {
     app.maybeStart();
@@ -353,7 +376,10 @@ socket.on('message', function (message) {
 });
 
 window.onbeforeunload = () => {
-  sendMessage({ type: "bye", room: app.room });
+  sendMessage({
+    type: "bye",
+    room: app.room
+  });
 };
 
 
@@ -370,7 +396,7 @@ function requestTurn(turnURL) {
     console.log('Getting TURN server from ', turnURL);
     // No TURN server. Get one from computeengineondemand.appspot.com:
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
+    xhr.onreadystatechange = function() {
       if (xhr.readyState === 4 && xhr.status === 200) {
         var turnServer = JSON.parse(xhr.responseText);
         console.log('Got TURN server: ', turnServer);

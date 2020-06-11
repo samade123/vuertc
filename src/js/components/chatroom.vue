@@ -9,6 +9,7 @@
             <div class="bottom">
                 <div class="room-func">
                     <div class="room-name">{{currentRoom.name}}</div>
+                    <div class="chip" v-if="roomOpen"><vs-chip>Room Open</vs-chip></div>
                     <div class="functions">
                         <div @click="settings = !settings">
                             <i class="material-icons">settings</i>
@@ -112,6 +113,9 @@ export default {
         currentRoom: {
             type: Object,
         },
+        roomOpen:  {
+          type: Boolean,
+        },
     },
     data() {
         return {
@@ -160,7 +164,7 @@ export default {
             this.currentState = state;
             if (state == this.states.video) {
                 this.$emit("local");
-                        console.log("kicking off camera");
+                        // console.log("kicking off camera");
 
                 setTimeout(() => {
                     if (this.localCamera) {
@@ -168,6 +172,10 @@ export default {
                         this.$refs.localVideo.srcObject = this.localCamera;
                     }
                 }, 1000);
+            } else if(state == this.states.chat) {
+              console.log("messaging from chatroom");
+
+              this.$emit("message")
             }
         },
     },

@@ -8,7 +8,7 @@
             </div>
             <div class="bottom">
                 <div class="room-func">
-                    <div class="room-name">{{currentRoom.name}}</div>
+                    <div class="room-name">{{ currentRoom.name }}</div>
                     <div class="chip" v-if="roomOpen"><vs-chip>Room Open</vs-chip></div>
                     <div class="functions">
                         <div @click="settings = !settings">
@@ -42,11 +42,9 @@
             </div>
         </div>
         <div v-if="currentState == states.video" class="chat-card">
-            <div class="top video-wrapper" >
+            <div class="top video-wrapper">
                 <div class="main-vid">
-
                     <video class="video" autoplay playsinline height="100%" id="remoteVideo" ref="remoteVideo"></video>
-
                 </div>
                 <div class="quick-glance">
                     <div class="localCam">
@@ -65,13 +63,19 @@
                     <div class="icons">
                         <i class="material-icons">videocam</i>
                     </div>
-                        <!-- <button class="btn" @click="stopCamera">Test Camera</button>
-                          <button class="btn" @click="shareScreen">Share Screen</button> -->
+                    <div class="icons">
+                        <button class="form-control" @click="sharing">Share Screen</button>
                     </div>
+                    <!-- <button class="btn" @click="stopCamera">Test Camera</button>
+                          <button class="btn" @click="shareScreen">Share Screen</button> -->
+                </div>
             </div>
             <div class="bottom">
+                <vs-popup title="Accept call?" :active.sync="popUp">
+                    <div> Someone is calling you. Do you want to accept</div>
+                    <vs-button @click="popUp=false">yes</vs-button> </vs-popup>
                 <div class="room-func">
-                    <div class="room-name">{{currentRoom.name}}</div>
+                    <div class="room-name">{{ currentRoom.name }}</div>
                     <div class="functions">
                         <i class="material-icons">videocam</i>
                         <i @click="currentState == states.chat" class="material-icons">message</i>
@@ -80,14 +84,18 @@
             </div>
         </div>
         <div v-if="currentState == states.chat" class="chatting">
-            <div class="chat-header"><i class="material-icons" @click="changeState(states.card)">arrow_back</i> <vs-avatar color="primary" /></div>
+            <div class="chat-header"><i class="material-icons" @click="changeState(states.card)">arrow_back</i> <vs-avatar color="primary" /><div class="chat-title">{{ currentRoom.name }}</div></div>
             <div class="chat-history">
-                <div class="chat-msg" v-for="msg in messages" :key="msg.timestamp">
-                    <h4>{{ typeof msg.data === "string" ? JSON.parse(msg.data).message : msg.message }}</h4>
+                <div class="chat-msg" v-for="msg in messages" :class="msg.right ? 'right' : false" :key="msg.timestamp">
+                    <vs-avatar v-if="!msg.right"></vs-avatar>
+                    <div class="chat-body" :class="msg.right ? 'right' : false">
+                        <h4>{{ typeof msg.data === "string" ? JSON.parse(msg.data).message : msg.message }}</h4>
+                    </div>
+                    <vs-avatar v-if="msg.right" color="#5d5dbf"></vs-avatar>
                 </div>
             </div>
             <div class="chat-input">
-                <vs-input icon="message" :disabled="!showChat" v-model="currentMessage"> </vs-input>
+                <vs-input icon="message" @keyup.enter="send" autofocus :disabled="!showChat" v-model="currentMessage"> </vs-input>
                 <vs-button size="small" @click="send">Enter</vs-button>
             </div>
         </div>
@@ -113,8 +121,11 @@ export default {
         currentRoom: {
             type: Object,
         },
-        roomOpen:  {
-          type: Boolean,
+        roomOpen: {
+            type: Boolean,
+        },
+        showVideo:  {
+            type: Boolean,
         },
     },
     data() {
@@ -131,6 +142,7 @@ export default {
             currentState: "empty",
             settings: false,
             devices: [],
+            popUp: false,
         };
     },
     watch: {
@@ -140,12 +152,18 @@ export default {
                 this.currentState = this.states.card;
             }
         },
-        "localCamera"() {
+        localCamera() {
             console.log("asldpskdpaskopkaspoko");
 
             if (this.localCamera) {
                 console.log(this.localCamera);
                 this.$refs.localVideo.srcObject = this.localCamera;
+            }
+        },
+        showVideo() {
+            if (this.showVideo) {
+                this.changeState(this.states.video)
+                this.popUp=true;
             }
         },
         //   deep: true,
@@ -158,24 +176,25 @@ export default {
             this.$emit("send", this.currentMessage);
             // this.currentState = this.states.card;
             console.log("comp send", this.currentMessage);
+            setTimeout(() => {
+                this.currentMessage = "";
+            }, 500);
         },
         changeState(state) {
             console.log("change state: ", state);
             this.currentState = state;
             if (state == this.states.video) {
                 this.$emit("local");
-                        // console.log("kicking off camera");
+                // console.log("kicking off camera");
 
-                setTimeout(() => {
                     if (this.localCamera) {
                         console.log(this.localCamera);
                         this.$refs.localVideo.srcObject = this.localCamera;
                     }
-                }, 1000);
-            } else if(state == this.states.chat) {
-              console.log("messaging from chatroom");
+            } else if (state == this.states.chat) {
+                console.log("messaging from chatroom");
 
-              this.$emit("message")
+                this.$emit("message");
             }
         },
     },

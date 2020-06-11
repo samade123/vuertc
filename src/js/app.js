@@ -15,7 +15,7 @@ Vue.use(Vuesax, {
 require('./components');
 var parse = require('url-parse');
 
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
   if (sessionStorage.getItem('scrollPosition') !== null)
     document.getElementsByClassName("main-body")[0].scrollTo({
       top: sessionStorage.getItem('scrollPosition'),
@@ -39,10 +39,7 @@ var app = new Vue({
     mediaStreamConstraints: {
       video: true,
     },
-    messages: [{
-      data: '{"message":"asdsadasd","timestamp":"2020-06-06T13:10:59.326Z"}',
-      timestamp: 341413,
-    }],
+    messages: [],
     currentMessage: "",
     pages: {
       header: "header",
@@ -65,6 +62,7 @@ var app = new Vue({
     message: false,
     displayStream: false,
     localStream: {},
+    showVideo: false,
   },
   watch: {},
   methods: {
@@ -78,12 +76,11 @@ var app = new Vue({
       this.localStream = mediaStream;
       // this.localStream = null;
       // this.localStream = mediaStream;
-      setTimeout(() => {
+      this.dcSendText("none", "video")
         this.localVideo = document.getElementById("localVideo")
         console.log(this.localVideo)
 
         this.localVideo.srcObject = this.localStream;
-      }, 1000);
 
       this.sendMessageToServer('got user media');
       if (this.isInitiator) {
@@ -93,7 +90,7 @@ var app = new Vue({
           this.maybeStart();
         }
       } else if (this.isStarted) {
-        pc.addStream(this.localStream);
+        pc.addStream(this.localStream); //sends local sream to other peer 
       }
     },
     handleLocalMediaStreamError(e) {
@@ -156,7 +153,13 @@ var app = new Vue({
       this.dataChannel.onmessage = (event) => {
         console.log('CHANNEL message!!!', event);
         // this.currentMessage = event.data;
-        this.messages.push(event)
+        console.log("recieved", event.type, event.type == "video" )
+        if (event.type == "video") {
+          console.log("message!!!!!")
+          this.showVideo = true;
+        } else {
+          this.messages.push(event)
+        }
       };
     },
     createPeerConnection() {
@@ -216,14 +219,21 @@ var app = new Vue({
     },
     handleRemoteStreamAdded(event) {
       console.log('Remote stream added.', event);
-      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", this.remoteStream)
+      this.showVideo = true;
+      console.log("showing videoooo")
+
+      // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", this.remoteStream)
       if (this.test) {
         this.remoteScreen = event.stream;
         this.screenShare.srcObject = this.remoteScreen;
       } else {
-        this.remoteVideo = document.getElementById("remoteVideo")
         this.remoteStream = event.stream;
-        this.remoteVideo.srcObject = this.remoteStream;
+        setTimeout(() => {
+          this.remoteVideo = document.getElementById("remoteVideo") //give time for vue video elemnt to render
+        });
+        setTimeout(() => {
+          this.remoteVideo.srcObject = this.remoteStream;
+        }, 1000);
       }
 
       this.test = true;
@@ -249,22 +259,23 @@ var app = new Vue({
         pc = null;
       }
     },
-    dcSendText(message) {
+    dcSendText(message, type) {
       console.log("sending!!!", message, this.dataChannel);
       let obj = {
         "message": message,
+        "type": type,
         "timestamp": new Date()
       }
       this.dataChannel.send(JSON.stringify(obj));
       console.log(obj)
-      obj.left = true
+      obj.right = true
       this.messages.push(obj);
       app.currentMessage = '';
     },
     shareScreen() {
       navigator.mediaDevices.getDisplayMedia({
-          video: true
-        })
+        video: true
+      })
         .then(mediaStream => {
           console.log(this.$refs.screenShare)
           this.$refs.screenShare.srcObject = mediaStream;
@@ -299,7 +310,7 @@ var app = new Vue({
     }
   },
   mounted() {
-    socket = io.connect("http://localhost:8887");
+    socket = io.connect("https://00e62d07c0a1.ngrok.io");
     // this.room = prompt('Enter room name:');
 
     // this.joinRoom()
@@ -317,29 +328,30 @@ var app = new Vue({
 
 //////////////////////////////////////////////Socket io turn server client stuff////////////////////////////////////////////////////////////////////////////////
 
-socket.on('created', function(room) {
+socket.on('created', function (room) {
   console.log('Created room ' + room);
   app.isInitiator = true;
   console.log(app.isInitiator);
 
 });
 
-socket.on('full', function(room) {
+socket.on('full', function (room) {
   console.log('Room ' + room + ' is full');
 });
 
-socket.on('join', function(room) {
+socket.on('join', function (room) {
   console.log('Another peer made a request to join room ' + room);
   console.log('This peer is the initiator of room ' + room + '!');
   app.isChannelReady = true;
+  app.maybeStart()
 });
 
-socket.on('joined', function(room) {
+socket.on('joined', function (room) {
   console.log('joined: ' + room);
   app.isChannelReady = true;
 });
 
-socket.on('log', function(array) {
+socket.on('log', function (array) {
   console.log.apply(console, array);
 });
 
@@ -352,7 +364,7 @@ function sendMessage(message) {
 }
 
 // This client receives a message
-socket.on('message', function(message) {
+socket.on('message', function (message) {
   console.log('Client received message:', message);
   if (message === 'got user media') {
     app.maybeStart();
@@ -396,7 +408,7 @@ function requestTurn(turnURL) {
     console.log('Getting TURN server from ', turnURL);
     // No TURN server. Get one from computeengineondemand.appspot.com:
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
       if (xhr.readyState === 4 && xhr.status === 200) {
         var turnServer = JSON.parse(xhr.responseText);
         console.log('Got TURN server: ', turnServer);

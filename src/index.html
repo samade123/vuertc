@@ -29,7 +29,7 @@
     <div class="main-wrapper">
       <div class="main">
         <!-- <div class="main"  :class="currentPage == pages.header ? 'active' : false"> -->
-        <room-strip @room="setRoom($event)" v-if=" !(windowWidth < 600 && currentPage==pages.chatting)"></room-strip>
+        <room-strip @room="setRoom($event)" v-if=" !(windowWidth < 600 && currentPage==pages.chatting)" :messages="messages"></room-strip>
         <div class="title" v-if="(windowWidth > 2000 ) && (currentPage == pages.chatting)">
           <header>VUERTC</header>
           <div class="main-vid">
@@ -55,7 +55,7 @@
         </div>
 
         <chat-room v-if="windowWidth > 600 || (windowWidth < 600 && currentPage==pages.chatting)" :current-message="currentMessage" :show-chat="message" :messages="messages" :card="currentPage==pages.chatting" @send="dcSendText($event)"
-          :localCamera="localStream" @local="testMedia" :current-room="currentRoom" :room-open="isChannelReady" @message="start">
+          :localCamera="localStream" @local="testMedia" :current-room="currentRoom" :room-open="isChannelReady" @message="start" :show-video="showVideo">
           <!-- <video id="localVideo" class="video" autoplay playsinline height="150px" ref="localVideo"></video> -->
         </chat-room>
       </div>

@@ -8,7 +8,7 @@
             </div>
             <div class="bottom">
                 <div class="room-func">
-                    <div class="room-name">Room Name</div>
+                    <div class="room-name">{{currentRoom.name}}</div>
                     <div class="functions">
                         <div @click="settings = !settings">
                             <i class="material-icons">settings</i>
@@ -43,9 +43,9 @@
         <div v-if="currentState == states.video" class="chat-card">
             <div class="top video-wrapper" >
                 <div class="main-vid">
-                        
+
                     <video class="video" autoplay playsinline height="100%" id="remoteVideo" ref="remoteVideo"></video>
-                    
+
                 </div>
                 <div class="quick-glance">
                     <div class="localCam">
@@ -70,7 +70,7 @@
             </div>
             <div class="bottom">
                 <div class="room-func">
-                    <div class="room-name">Room Name</div>
+                    <div class="room-name">{{currentRoom.name}}</div>
                     <div class="functions">
                         <i class="material-icons">videocam</i>
                         <i @click="currentState == states.chat" class="material-icons">message</i>
@@ -107,6 +107,9 @@ export default {
             type: Boolean,
         },
         localCamera: {
+            type: Object,
+        },
+        currentRoom: {
             type: Object,
         },
     },

@@ -37,6 +37,19 @@ main {
   &[v-cloak] {
     display: none;
   }
+  header.top {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    div {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      margin-right: 5px;
+    }
+  }
 
   .page {
     flex-grow: 1;
@@ -75,7 +88,7 @@ div.main {
   height: 95%;
   width: 100%;
   padding: 10px 0;
- 
+
   color: black;
   padding: 0; // margin: 15px;
   // transition: max-height 0.3s ease-out; // note that we're transitioning max-height, not height!
@@ -121,7 +134,7 @@ div.main {
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      
+
       // z-index: 2;
       // width: auto;
       // position: fixed;

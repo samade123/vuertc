@@ -10,6 +10,11 @@
       display: none;
     }
     .chat-card {
+      .top {
+        .quick-glance {
+          width: 80px;
+        }
+      }
       .bottom {
         .settings {
           width: 100%;

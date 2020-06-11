@@ -70,7 +70,7 @@ var app = new Vue({
       navigator.mediaDevices.getUserMedia(this.mediaStreamConstraints)
         .then(this.gotLocalMediaStream).catch(this.handleLocalMediaStreamError);
     },
-    gotLocalMediaStream(mediaStream) { //this sets the lcal video 
+    gotLocalMediaStream(mediaStream) { //this sets the lcal video
       console.log('Getting user media with constraints', this.mediaStreamConstraints);
 
       this.localStream = mediaStream;
@@ -79,7 +79,7 @@ var app = new Vue({
       setTimeout(() => {
         this.localVideo = document.getElementById("localVideo")
         console.log(this.localVideo)
-  
+
         this.localVideo.srcObject = this.localStream;
       }, 1000);
 
@@ -192,7 +192,7 @@ var app = new Vue({
       console.log("renogiating")
       // if (this.isInitiator){
       pc.createOffer(this.setLocalAndSendMessage, this.handleCreateOfferError);
-      // } 
+      // }
     },
     setLocalAndSendMessage(sessionDescription) {
       pc.setLocalDescription(sessionDescription);
@@ -276,7 +276,7 @@ var app = new Vue({
     }
   },
   mounted() {
-    socket = io.connect();
+    socket = io.connect("http://localhost:8887");
     // this.room = prompt('Enter room name:');
 
     // this.joinRoom()

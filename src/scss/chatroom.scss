@@ -29,9 +29,11 @@
       &.video-wrapper {
         flex-direction: row;
         justify-content: flex-start;
-        
+
         background: black;
         position: relative;
+        max-height: 400px;
+        max-width: 100%;
 
       }
 
@@ -57,10 +59,12 @@
           // position: relative;
 
           // min-width: 639px;
-          // min-height: 470px;
+          // max-height: 470px;
           background: #000e;
           // box-shadow: #4446 0 0px 2px;
           // object-fit: contain;
+            max-height: 100%;
+            max-width: 100%;
         }
       }
 
@@ -72,7 +76,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        width: 150px;
+        width: 140px;
         background: #ffffff33;
         z-index: 30;
         border-radius: 0 5px 0 0 ;

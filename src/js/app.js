@@ -225,7 +225,10 @@ var app = new Vue({
       // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", this.remoteStream)
       if (this.test) {
         this.remoteScreen = event.stream;
-        this.screenShare.srcObject = this.remoteScreen;
+        // this.screenShare = document.getElementById("screenShare")
+        // this.screenShare.srcObject = this.remoteScreen;
+        this.remoteVideo.srcObject = this.remoteScreen;
+
       } else {
         this.remoteStream = event.stream;
         setTimeout(() => {
@@ -273,12 +276,15 @@ var app = new Vue({
       app.currentMessage = '';
     },
     shareScreen() {
+      console.log("media devices!!!!!")
       navigator.mediaDevices.getDisplayMedia({
         video: true
       })
         .then(mediaStream => {
-          console.log(this.$refs.screenShare)
-          this.$refs.screenShare.srcObject = mediaStream;
+          // console.log(this.$refs.screenShare)
+          // this.$refs.screenShare.srcObject = mediaStream;
+          this.screenShare = document.getElementById("screenShare")
+          this.screenShare.srcObject = mediaStream;
           pc.addStream(mediaStream);
         })
         .catch(err => {

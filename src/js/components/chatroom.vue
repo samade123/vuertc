@@ -54,7 +54,7 @@
                     </div>
                     <div class="localCam">
                         <!-- <video class="video" :src="displayStream ? URL.createObjectURL(displayStream) : false;"  autoplay playsinline height="150px" ref="screenShare"></video> -->
-                        <!-- <video class="video" autoplay playsinline width="100%" id="screenShare" ref="screenShare"></video> -->
+                        <video class="video" autoplay playsinline width="100%" id="screenShare" ref="screenShare"></video>
                         <!-- <div @click="stopCamera">Your Screen</div> -->
                     </div>
                     <!-- </div> -->
@@ -72,8 +72,9 @@
             </div>
             <div class="bottom">
                 <vs-popup title="Accept call?" :active.sync="popUp">
-                    <div> Someone is calling you. Do you want to accept</div>
-                    <vs-button @click="popUp=false">yes</vs-button> </vs-popup>
+                    <div>Someone is calling you. Do you want to accept</div>
+                    <vs-button @click="popUp = false">yes</vs-button>
+                </vs-popup>
                 <div class="room-func">
                     <div class="room-name">{{ currentRoom.name }}</div>
                     <div class="functions">
@@ -84,7 +85,10 @@
             </div>
         </div>
         <div v-if="currentState == states.chat" class="chatting">
-            <div class="chat-header"><i class="material-icons" @click="changeState(states.card)">arrow_back</i> <vs-avatar color="primary" /><div class="chat-title">{{ currentRoom.name }}</div></div>
+            <div class="chat-header">
+                <i class="material-icons" @click="changeState(states.card)">arrow_back</i> <vs-avatar color="primary" />
+                <div class="chat-title">{{ currentRoom.name }}</div>
+            </div>
             <div class="chat-history">
                 <div class="chat-msg" v-for="msg in messages" :class="msg.right ? 'right' : false" :key="msg.timestamp">
                     <vs-avatar v-if="!msg.right"></vs-avatar>
@@ -163,8 +167,9 @@ export default {
         showVideo() {
             if (this.showVideo) {
                 this.changeState(this.states.video)
-                this.popUp=true;
+                // this.popUp=true;
             }
+
         },
         //   deep: true,
     },
@@ -197,6 +202,9 @@ export default {
                 this.$emit("message");
             }
         },
+        sharing() {
+                this.$emit("sharing")
+            },
     },
     created() {},
     mounted() {

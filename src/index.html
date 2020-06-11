@@ -55,7 +55,7 @@
         </div>
 
         <chat-room v-if="windowWidth > 600 || (windowWidth < 600 && currentPage==pages.chatting)" :current-message="currentMessage" :show-chat="message" :messages="messages" :card="currentPage==pages.chatting" @send="dcSendText($event)"
-          :localCamera="localStream" @local="testMedia" :current-room="currentRoom" :room-open="isChannelReady" @message="start" :show-video="showVideo">
+          :localCamera="localStream" @local="testMedia" :current-room="currentRoom" :room-open="isChannelReady" @message="start" :show-video="showVideo" @sharing="shareScreen">
           <!-- <video id="localVideo" class="video" autoplay playsinline height="150px" ref="localVideo"></video> -->
         </chat-room>
       </div>

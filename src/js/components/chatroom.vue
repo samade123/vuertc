@@ -41,29 +41,32 @@
             </div>
         </div>
         <div v-if="currentState == states.video" class="chat-card">
-            <div class="top">
+            <div class="top video-wrapper" >
                 <div class="main-vid">
-                            
-
-                    <video class="video" autoplay playsinline width="75%" id="remoteVideo" ref="remoteVideo"></video>
-                    <div class="controls">
-                        <!-- <button class="btn" @click="stopCamera">Test Camera</button>
-                          <button class="btn" @click="shareScreen">Share Screen</button> -->
-                    </div>
+                        
+                    <video class="video" autoplay playsinline height="100%" id="remoteVideo" ref="remoteVideo"></video>
+                    
                 </div>
                 <div class="quick-glance">
                     <div class="localCam">
-                        <video id="localVideo" class="video" autoplay playsinline height="75px" ref="localVideo"></video>
+                        <video id="localVideo" class="video" autoplay playsinline width="100%" ref="localVideo"></video>
                         <slot></slot>
                         <!-- <div @click="stopCamera">Local Camera</div> -->
                     </div>
                     <div class="localCam">
                         <!-- <video class="video" :src="displayStream ? URL.createObjectURL(displayStream) : false;"  autoplay playsinline height="150px" ref="screenShare"></video> -->
-                        <video class="video" autoplay playsinline height="75px" ref="screenShare"></video>
+                        <!-- <video class="video" autoplay playsinline width="100%" id="screenShare" ref="screenShare"></video> -->
                         <!-- <div @click="stopCamera">Your Screen</div> -->
                     </div>
                     <!-- </div> -->
                 </div>
+                <div class="controls">
+                    <div class="icons">
+                        <i class="material-icons">videocam</i>
+                    </div>
+                        <!-- <button class="btn" @click="stopCamera">Test Camera</button>
+                          <button class="btn" @click="shareScreen">Share Screen</button> -->
+                    </div>
             </div>
             <div class="bottom">
                 <div class="room-func">

@@ -276,7 +276,7 @@ var app = new Vue({
     }
   },
   mounted() {
-    socket = io.connect('http://localhost:8887/');
+    socket = io.connect();
     // this.room = prompt('Enter room name:');
 
     // this.joinRoom()
@@ -284,11 +284,11 @@ var app = new Vue({
     this.remoteVideo = this.$refs.remoteVideo
     this.screenShare = this.$refs.screenShare
     // this.testMedia()
-    if (location.hostname !== 'localhost') {
-      requestTurn(
-        'https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913'
-      );
-    }
+    // if (location.hostname !== 'localhost') {
+    //   requestTurn(
+    //     'https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913'
+    //   );
+    // }
   }
 });
 
@@ -359,8 +359,8 @@ window.onbeforeunload = () => {
 
 function requestTurn(turnURL) {
   var turnExists = false;
-  for (var i in pcConfig.iceServers) {
-    if (pcConfig.iceServers[i].urls.substr(0, 5) === 'turn:') {
+  for (var i in app.pcConfig.iceServers) {
+    if (app.pcConfig.iceServers[i].urls.substr(0, 5) === 'turn:') {
       turnExists = true;
       turnReady = true;
       break;
@@ -374,7 +374,7 @@ function requestTurn(turnURL) {
       if (xhr.readyState === 4 && xhr.status === 200) {
         var turnServer = JSON.parse(xhr.responseText);
         console.log('Got TURN server: ', turnServer);
-        pcConfig.iceServers.push({
+        app.pcConfig.iceServers.push({
           'urls': 'turn:' + turnServer.username + '@' + turnServer.turn,
           'credential': turnServer.password
         });

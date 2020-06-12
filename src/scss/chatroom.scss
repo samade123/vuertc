@@ -100,9 +100,10 @@
         z-index: 31;
         .icons {
           margin: 0 10px;
-          .material-icons {
+          & > * {
             color: #e7e7e7;
           }
+
         }
       }
     }
@@ -135,7 +136,10 @@
           align-items: center;
           // width: 120px;
           height: 100%;
+          
           vertical-align: middle;
+          // overflow: hidden;
+          // transition: max-width 0.3s ease;
           div {
             height: 80%;
             i {

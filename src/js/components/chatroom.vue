@@ -9,15 +9,17 @@
             <div class="bottom">
                 <div class="room-func">
                     <div class="room-name">{{ currentRoom.name }}</div>
-                    <div class="chip" v-if="roomOpen"><vs-chip>Room Open</vs-chip></div>
-                    <div class="functions">
+                    <div class="chip"  v-if="!roomOpen"><vs-chip color="danger">Room Empty</vs-chip></div>
+                    <div class="chip" v-else><vs-chip color="success">Room available</vs-chip></div>
+                    <!-- <div class="functions" :style="{opacity: roomOpen ? '1': '0'}"> -->
+                    <div class="functions" >
                         <div @click="settings = !settings">
                             <i class="material-icons">settings</i>
                         </div>
                         <div>
                             <i class="material-icons">call</i>
                         </div>
-                        <div @click="changeState(states.video)">
+                        <div clas="wow bounceInUp"  v-if="roomOpen" @click="changeState(states.video)">
                             <i class="material-icons">videocam</i>
                         </div>
                         <div @click="changeState(states.chat)">

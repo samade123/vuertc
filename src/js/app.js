@@ -2,6 +2,9 @@ import Vuesax from 'vuesax'
 import 'vuesax/dist/vuesax.css' //Vuesax styles
 import VueWindowSize from 'vue-window-size';
 require('../scss/app.scss');
+var VideoStreamMerger = require('video-stream-merger')
+
+
 
 window.Vue = require('vue');
 Vue.config.devtools = true
@@ -77,10 +80,10 @@ var app = new Vue({
       // this.localStream = null;
       // this.localStream = mediaStream;
       this.dcSendText("none", "video")
-        this.localVideo = document.getElementById("localVideo")
-        console.log(this.localVideo)
+      this.localVideo = document.getElementById("localVideo")
+      console.log(this.localVideo)
 
-        this.localVideo.srcObject = this.localStream;
+      this.localVideo.srcObject = this.localStream;
 
       this.sendMessageToServer('got user media');
       if (this.isInitiator) {
@@ -153,7 +156,7 @@ var app = new Vue({
       this.dataChannel.onmessage = (event) => {
         console.log('CHANNEL message!!!', event);
         // this.currentMessage = event.data;
-        console.log("recieved", event.type, event.type == "video" )
+        console.log("recieved", event.type, event.type == "video")
         if (event.type == "video") {
           console.log("message!!!!!")
           this.showVideo = true;
@@ -258,7 +261,7 @@ var app = new Vue({
       console.log("stopped")
       this.isStarted = false;
       socket.emit('bye', this.room);
-     
+
       if (pc) {
         pc.close();
         pc = null;
@@ -285,14 +288,46 @@ var app = new Vue({
         .then(mediaStream => {
           // console.log(this.$refs.screenShare)
           // this.$refs.screenShare.srcObject = mediaStream;
+          this.screenStream = mediaStream;
           this.screenShare = document.getElementById("screenShare")
           this.screenShare.srcObject = mediaStream;
-          pc.addStream(mediaStream);
+          // pc.addStream(mediaStream); // tis would add just the screenshare to the remote stream
+          this.mergeScreens();
         })
         .catch(err => {
           console.error("Error:" + err);
           return null;
         });
+
+    },
+    mergeScreens() {
+      var merger = new VideoStreamMerger({
+        width: this.windowWidth,   // Width of the output video
+        height: this.windowHeight,  // Height of the output video
+        fps: 30,       // Video capture frames per second
+        clearRect: false, // Clear the canvas every frame
+        audioContext: null, // Supply an external AudioContext (for audio effects)
+      })
+
+      // Add the screen capture. Position it to fill the whole stream (the default)
+      merger.addStream(this.screenStream, {
+        x: 0, // position of the topleft corner
+        y: 0,
+        width: merger.width,
+        height: merger.height,
+        mute: true // we don't want sound from the screen (if there is any)
+      })
+      // Add the webcam stream. Position it on the bottom left and resize it to 100x100.
+      merger.addStream(this.localStream, {
+        x: 0,
+        y: merger.height - 300,
+        width: 300,
+        height: 300,
+        mute: true
+      })
+      merger.start()
+
+      pc.addStream(merger.result)
 
     },
     setRoom(room) {

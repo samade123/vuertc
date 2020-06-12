@@ -318,7 +318,7 @@ var app = new Vue({
     }
   },
   mounted() {
-    socket = io.connect("https://00e62d07c0a1.ngrok.io");
+    socket = io.connect();
     // this.room = prompt('Enter room name:');
 
     // this.joinRoom()

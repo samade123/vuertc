@@ -66,7 +66,7 @@
                         <i class="material-icons">videocam</i>
                     </div>
                     <div class="icons">
-                        <button class="form-control" @click="sharing">Share Screen</button>
+                        <button class="btn" @click="sharing">Share Screen</button>
                     </div>
                     <!-- <button class="btn" @click="stopCamera">Test Camera</button>
                           <button class="btn" @click="shareScreen">Share Screen</button> -->

@@ -67,5 +67,12 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('bye', function(room) {
     console.log(`Peer said bye on room ${room}.`);
+    var clientsInRoom = io.sockets.adapter.rooms[room];
+    console.log("heyyy")
+    var numClients = clientsInRoom ? Object.keys(clientsInRoom.sockets).length : 0;
+    console.log(numClients, clientsInRoom);
+    socket.leave(room, () => {
+      console.log("leaving")
+    });
   });
 });

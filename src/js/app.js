@@ -215,7 +215,7 @@ var app = new Vue({
       this.sendMessageToServer(sessionDescription);
     },
     onCreateSessionDescriptionError(error) {
-      trace('Failed to create session description: ' + error.toString());
+      console.debug('Failed to create session description: ' + error.toString());
     },
     handleRemoteStreamAdded(event) {
       console.log('Remote stream added.', event);
@@ -251,12 +251,14 @@ var app = new Vue({
     },
     handleRemoteHangup() {
       console.log('Session terminated.');
-      stop();
+      this.stop();
       this.isInitiator = false;
     },
     stop() {
       console.log("stopped")
       this.isStarted = false;
+      socket.emit('bye', this.room);
+     
       if (pc) {
         pc.close();
         pc = null;

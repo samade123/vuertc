@@ -94,8 +94,8 @@
             <div class="chat-history">
                 <div class="chat-wrapper">
                     <div class="chat-msg" v-for="msg in messages" :class="msg.right ? 'right' : false" :key="msg.timestamp">
-                        <vs-avatar v-if="!msg.right"></vs-avatar>
-                        <div class="chat-body" :class="msg.right ? 'right' : false">
+                        <vs-avatar v-if="!msg.right"  :color="currentRoom.color"></vs-avatar>
+                        <div class="chat-body" :class="msg.right ? 'right' : false" :style="{backgroundColor: msg.right ? false : currentRoom.color}">
                             <h4>{{ typeof msg.data === "string" ? JSON.parse(msg.data).message : msg.message }}</h4>
                         </div>
                         <vs-avatar v-if="msg.right" color="#5d5dbf"></vs-avatar>

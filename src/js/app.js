@@ -67,7 +67,7 @@ var app = new Vue({
     localStream: {},
     showVideo: false,
     dataChannel: false,
-    isnegotioating: false,
+    isNegotiating: false,
   },
   watch: {},
   methods: {
@@ -94,7 +94,7 @@ var app = new Vue({
         if (this.isStarted) { //only add stream to peer connection if peerconnection available
           pc.addStream(this.localStream);
         } else {
-          this.maybeStart();
+          this.maybeStart(true);
         }
       } else if (this.isStarted) {
         pc.addStream(this.localStream); //sends local sream to other peer 
@@ -122,7 +122,7 @@ var app = new Vue({
       // console.debug('Client sending message: ', message);
       socket.emit('message', message);
     },
-    maybeStart() {
+    maybeStart(media = false) {
       console.debug('>>>>>>> maybeStart() this.isStarted: ', this.isStarted, "localStream: ", this.localStream, "channelReady: ", this.isChannelReady);
       if (!this.isStarted && this.isChannelReady) {
         console.debug('>>>>>> creating peer connection');
@@ -131,6 +131,10 @@ var app = new Vue({
         //   console.log("localstream", this.localStream)
         //   pc.addStream(this.localStream);
         // }
+        if (media) {
+          console.log("localstream", this.localStream)
+          pc.addStream(this.localStream);
+        }
         this.isStarted = true;
         console.log('isInitiator', this.isInitiator);
         if (this.isInitiator) {
@@ -215,13 +219,13 @@ var app = new Vue({
       );
     },
     renegotiate() {
-      if(this.isnegotioating){
+      if(this.isNegotiating){
         console.log("skip nested negotiation")
         return
       }
       console.log("renogiating") //this is needed for when user changes camera or audio device
       pc.createOffer(this.setLocalAndSendMessage, this.handleCreateOfferError)
-      .catch((e) => {console.error(e)});
+      .catch((e) => {console.error("eroorrring", e)});
     },
     setLocalAndSendMessage(sessionDescription) {
       pc.setLocalDescription(sessionDescription);
@@ -396,7 +400,7 @@ socket.on('join', function (room) {
   console.log('Another peer made a request to join room ' + room);
   console.log('This peer is the initiator of room ' + room + '!');
   app.isChannelReady = true;
-  app.maybeStart()
+  // app.maybeStart()
 });
 
 socket.on('joined', function (room) {

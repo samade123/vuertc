@@ -9,17 +9,17 @@
             <div class="bottom">
                 <div class="room-func">
                     <div class="room-name">{{ currentRoom.name }}</div>
-                    <div class="chip"  v-if="!roomOpen"><vs-chip color="danger">Room Empty</vs-chip></div>
+                    <div class="chip" v-if="!roomOpen"><vs-chip color="danger">Room Empty</vs-chip></div>
                     <div class="chip" v-else><vs-chip color="success">Room available</vs-chip></div>
                     <!-- <div class="functions" :style="{opacity: roomOpen ? '1': '0'}"> -->
-                    <div class="functions" >
+                    <div class="functions">
                         <div @click="settings = !settings">
                             <i class="material-icons">settings</i>
                         </div>
                         <div>
                             <i class="material-icons">call</i>
                         </div>
-                        <div clas="wow bounceInUp"  v-if="roomOpen" @click="changeState(states.video)">
+                        <div clas="wow bounceInUp" v-if="roomOpen" @click="changeState(states.video)">
                             <i class="material-icons">videocam</i>
                         </div>
                         <div @click="changeState(states.chat)">
@@ -66,7 +66,7 @@
                         <i class="material-icons">videocam</i>
                     </div>
                     <div class="icons">
-                        <button class="btn" @click="sharing">Share Screen</button>
+                        <button class="btn" v-if="windowWidth > 600" @click="sharing">Share Screen</button>
                     </div>
                     <!-- <button class="btn" @click="stopCamera">Test Camera</button>
                           <button class="btn" @click="shareScreen">Share Screen</button> -->
@@ -92,12 +92,14 @@
                 <div class="chat-title">{{ currentRoom.name }}</div>
             </div>
             <div class="chat-history">
-                <div class="chat-msg" v-for="msg in messages" :class="msg.right ? 'right' : false" :key="msg.timestamp">
-                    <vs-avatar v-if="!msg.right"></vs-avatar>
-                    <div class="chat-body" :class="msg.right ? 'right' : false">
-                        <h4>{{ typeof msg.data === "string" ? JSON.parse(msg.data).message : msg.message }}</h4>
+                <div class="chat-wrapper">
+                    <div class="chat-msg" v-for="msg in messages" :class="msg.right ? 'right' : false" :key="msg.timestamp">
+                        <vs-avatar v-if="!msg.right"></vs-avatar>
+                        <div class="chat-body" :class="msg.right ? 'right' : false">
+                            <h4>{{ typeof msg.data === "string" ? JSON.parse(msg.data).message : msg.message }}</h4>
+                        </div>
+                        <vs-avatar v-if="msg.right" color="#5d5dbf"></vs-avatar>
                     </div>
-                    <vs-avatar v-if="msg.right" color="#5d5dbf"></vs-avatar>
                 </div>
             </div>
             <div class="chat-input">
@@ -130,7 +132,7 @@ export default {
         roomOpen: {
             type: Boolean,
         },
-        showVideo:  {
+        showVideo: {
             type: Boolean,
         },
     },
@@ -168,10 +170,9 @@ export default {
         },
         showVideo() {
             if (this.showVideo) {
-                this.changeState(this.states.video)
+                this.changeState(this.states.video);
                 // this.popUp=true;
             }
-
         },
         //   deep: true,
     },
@@ -194,10 +195,10 @@ export default {
                 this.$emit("local");
                 // console.log("kicking off camera");
 
-                    if (this.localCamera) {
-                        console.log(this.localCamera);
-                        this.$refs.localVideo.srcObject = this.localCamera;
-                    }
+                // if (this.localCamera) {
+                //     console.log(this.localCamera);
+                //     this.$refs.localVideo.srcObject = this.localCamera;
+                // }
             } else if (state == this.states.chat) {
                 console.log("messaging from chatroom");
 
@@ -205,8 +206,8 @@ export default {
             }
         },
         sharing() {
-                this.$emit("sharing")
-            },
+            this.$emit("sharing");
+        },
     },
     created() {},
     mounted() {

@@ -2,7 +2,6 @@ import Vuesax from 'vuesax'
 import 'vuesax/dist/vuesax.css' //Vuesax styles
 import VueWindowSize from 'vue-window-size';
 require('../scss/app.scss');
-var VideoStreamMerger = require('video-stream-merger')
 
 
 
@@ -27,7 +26,8 @@ window.addEventListener('load', function () {
     });
 }, false);
 
-window.Images = require("./testing/images")
+var VideoStreamMerger = require('video-stream-merger')
+
 var socket;
 var pc;
 var turnReady;
@@ -37,22 +37,22 @@ var turnReady;
 var app = new Vue({
   el: 'main',
   data: {
-    currentRoom: false,
-    test: false,
-    mediaStreamConstraints: {
+    currentRoom: {}, //room object
+    shareRemoteScreen: false,
+    mediaStreamConstraints: { //constraint settigns for camera
       video: true,
     },
     messages: [],
     currentMessage: "",
     pages: {
-      header: "header",
+      home: "home",
       chatting: "chatting",
     },
-    currentPage: "header",
-    isChannelReady: false,
-    isInitiator: false,
+    currentPage: "home",
+    isChannelReady: false, //deos the room have more than one user in it?
+    isInitiator: false, // is this the first peer in the room
     isStarted: false,
-    pcConfig: {
+    pcConfig: { // stun server configuration
       'iceServers': [{
         'urls': 'stun:stun.l.google.com:19302'
       }]
@@ -62,10 +62,12 @@ var app = new Vue({
       offerToReceiveVideo: true
     },
     room: '',
-    message: false,
+    message: false, //room name that's passed to server
     displayStream: false,
     localStream: {},
     showVideo: false,
+    dataChannel: false,
+    isnegotioating: false,
   },
   watch: {},
   methods: {
@@ -73,21 +75,23 @@ var app = new Vue({
       navigator.mediaDevices.getUserMedia(this.mediaStreamConstraints)
         .then(this.gotLocalMediaStream).catch(this.handleLocalMediaStreamError);
     },
-    gotLocalMediaStream(mediaStream) { //this sets the lcal video
+    gotLocalMediaStream(mediaStream) { //this sets the local video
       console.log('Getting user media with constraints', this.mediaStreamConstraints);
 
       this.localStream = mediaStream;
-      // this.localStream = null;
-      // this.localStream = mediaStream;
-      this.dcSendText("none", "video")
+      if (this.dataChannel) { //dtachannel shoudve been created by now but if not create data channel first
+        console.log("data channnellijdqpijfopqekf[rpqe]pfqe#[f;#qe]]#")
+        this.dcSendText("none", "video")
+      } else {
+        console.log("dc", this.dataChannel, "peer connection", pc)
+      }
       this.localVideo = document.getElementById("localVideo")
-      console.log(this.localVideo)
 
       this.localVideo.srcObject = this.localStream;
 
       this.sendMessageToServer('got user media');
       if (this.isInitiator) {
-        if (this.isStarted) {
+        if (this.isStarted) { //only add stream to peer connection if peerconnection available
           pc.addStream(this.localStream);
         } else {
           this.maybeStart();
@@ -97,7 +101,7 @@ var app = new Vue({
       }
     },
     handleLocalMediaStreamError(e) {
-      console.log('getUserMedia() error: ' + e.name, e);
+      console.error('getUserMedia() error: ' + e.name, e);
     },
     stopCamera() {
       if (this.localStream) {
@@ -110,19 +114,19 @@ var app = new Vue({
     joinRoom() {
       if (this.room !== '') {
         socket.emit('create or join', this.room);
-        console.log('Attempted to create or  join room', this.room);
+        console.debug('Attempted to create or  join room', this.room);
         this.maybeStart();
       }
     },
     sendMessageToServer(message) {
-      console.log('Client sending message: ', message);
+      // console.debug('Client sending message: ', message);
       socket.emit('message', message);
     },
     maybeStart() {
-      console.log('>>>>>>> maybeStart() this.isStarted: ', this.isStarted, "localStream: ", this.localStream, "channelReady: ", this.isChannelReady);
+      console.debug('>>>>>>> maybeStart() this.isStarted: ', this.isStarted, "localStream: ", this.localStream, "channelReady: ", this.isChannelReady);
       if (!this.isStarted && this.isChannelReady) {
-        console.log('>>>>>> creating peer connection');
-        this.createPeerConnection();
+        console.debug('>>>>>> creating peer connection');
+        this.createPeerConnection();                        //This example detaches the adding of the local stream from creating a peer connection unlike most examples
         // if (typeof this.localStream !== 'undefined') {
         //   console.log("localstream", this.localStream)
         //   pc.addStream(this.localStream);
@@ -131,7 +135,7 @@ var app = new Vue({
         console.log('isInitiator', this.isInitiator);
         if (this.isInitiator) {
           console.log('Creating Data Channel');
-          this.dataChannel = pc.createDataChannel('photos');
+          this.dataChannel = pc.createDataChannel('photos'); //"create data channel then set functions to happen on datachannel events 
           this.onDataChannelCreated();
           this.doCall();
         } else {
@@ -172,6 +176,10 @@ var app = new Vue({
         pc.onaddstream = this.handleRemoteStreamAdded;
         pc.onremovestream = this.handleRemoteStreamRemoved;
         pc.onnegotiationneeded = this.renegotiate;
+        pc.onsignalingstatechange = (e) => {  // Workaround for Chrome: skip nested negotiations
+          this.isNegotiating = (pc.signalingState != "stable");
+        }
+
         console.log('Created RTCPeerConnnection');
       } catch (e) {
         console.log('Failed to create PeerConnection, exception: ' + e.message);
@@ -207,10 +215,13 @@ var app = new Vue({
       );
     },
     renegotiate() {
-      console.log("renogiating")
-      // if (this.isInitiator){
-      pc.createOffer(this.setLocalAndSendMessage, this.handleCreateOfferError);
-      // }
+      if(this.isnegotioating){
+        console.log("skip nested negotiation")
+        return
+      }
+      console.log("renogiating") //this is needed for when user changes camera or audio device
+      pc.createOffer(this.setLocalAndSendMessage, this.handleCreateOfferError)
+      .catch((e) => {console.error(e)});
     },
     setLocalAndSendMessage(sessionDescription) {
       pc.setLocalDescription(sessionDescription);
@@ -225,8 +236,7 @@ var app = new Vue({
       this.showVideo = true;
       console.log("showing videoooo")
 
-      // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", this.remoteStream)
-      if (this.test) {
+      if (this.shareRemoteScreen) {
         this.remoteScreen = event.stream;
         // this.screenShare = document.getElementById("screenShare")
         // this.screenShare.srcObject = this.remoteScreen;
@@ -242,7 +252,7 @@ var app = new Vue({
         }, 1000);
       }
 
-      this.test = true;
+      this.shareRemoteScreen = true;
     },
     handleRemoteStreamRemoved(event) {
       console.log('Remote stream removed. Event: ', event);
@@ -292,7 +302,7 @@ var app = new Vue({
           this.screenShare = document.getElementById("screenShare")
           this.screenShare.srcObject = mediaStream;
           // pc.addStream(mediaStream); // tis would add just the screenshare to the remote stream
-          this.mergeScreens();
+          this.mergeScreens(); // merge streams as only one stream can be added to the peer connection at a time
         })
         .catch(err => {
           console.error("Error:" + err);
@@ -395,7 +405,7 @@ socket.on('joined', function (room) {
 });
 
 socket.on('log', function (array) {
-  console.log.apply(console, array);
+  // console.log.apply(console, array);
 });
 
 
@@ -408,7 +418,7 @@ function sendMessage(message) {
 
 // This client receives a message
 socket.on('message', function (message) {
-  console.log('Client received message:', message);
+  // console.log('Client received message:', message);
   if (message === 'got user media') {
     app.maybeStart();
   } else if (message.type === 'offer') {

@@ -4,11 +4,16 @@ var os = require('os');
 var nodeStatic = require('node-static');
 var http = require('http');
 var socketIO = require('socket.io');
+// const nocache = require('nocache')
 
-var fileServer = new(nodeStatic.Server)();
+
+var fileServer = new(nodeStatic.Server)({ cache: false });
 var app = http.createServer(function(req, res) {
   fileServer.serve(req, res);
 }).listen(8887, "localhost");
+
+// app.use(nocache())
+
 
 var io = socketIO.listen(app);
 io.sockets.on('connection', function(socket) {

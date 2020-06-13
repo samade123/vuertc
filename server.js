@@ -7,7 +7,7 @@ var socketIO = require('socket.io');
 // const nocache = require('nocache')
 
 
-var fileServer = new(nodeStatic.Server)({ cache: false });
+var fileServer = new(nodeStatic.Server)('./dist',{ cache: false });
 var app = http.createServer(function(req, res) {
   fileServer.serve(req, res);
 }).listen(8887, "localhost");

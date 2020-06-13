@@ -5,7 +5,7 @@
     <span class="header-text">Rooms</span>
   </header>
   <div v-for="room in rooms" :key="room.name" @click="setRoom(room)" :style="{background: room == currentRoom ? '#0000000f' : 'transparent'}" class="room-space">
-    <vs-avatar color="primary" :badge="(room == currentRoom && messages.length > 0)" />
+    <vs-avatar icon="meeting_room" color="primary" :badge="(room == currentRoom && messages.length > 0)" />
     <div class="room-sub-space">
       <div class="room-name">{{ room.name }}</div>
       <div class="room-desc">{{ room.desc }}</div>

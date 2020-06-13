@@ -359,7 +359,7 @@ var app = new Vue({
 
       console.log("app js speaking", this.currentPage, this.currentRoom, this.pages.chatting)
     },
-    start() {
+    startPcDataChannel() {
       console.log("startingasdasd")
       if (!this.isStarted) {
         this.maybeStart();
@@ -401,6 +401,7 @@ socket.on('join', function (room) {
   console.log('This peer is the initiator of room ' + room + '!');
   app.isChannelReady = true;
   // app.maybeStart()
+  app.startPcDataChannel()
 });
 
 socket.on('joined', function (room) {

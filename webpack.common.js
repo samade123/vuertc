@@ -58,11 +58,11 @@ module.exports = {
       to: 'site/images',
       toType: 'dir'
     }]),
-    new CopyWebpackPlugin([{
-      from: 'server.js',
-      to: '.',
-      toType: 'dir'
-    }]),
+    // new CopyWebpackPlugin([{
+    //   from: 'server.js',
+    //   to: '.',
+    //   toType: 'dir'
+    // }]),
     // new NpmInstallPlugin()
   ],
   resolve: {

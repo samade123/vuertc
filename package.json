@@ -9,7 +9,7 @@
     "dev": "webpack --config webpack.dev.js",
     "watch": "webpack --watch --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
-    "start": "npm run --silent dev && npm run --silent hot"
+    "start": "node server.js"
   },
   "author": "sam",
   "license": "ISC",

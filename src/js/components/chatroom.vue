@@ -3,7 +3,7 @@
         <div v-if="currentState == states.card" class="chat-card">
             <div class="top">
                 <div class="profile">
-                    <i class="material-icons">face</i>
+                    <i class="material-icons">meeting_room</i>
                 </div>
             </div>
             <div class="bottom">
@@ -31,11 +31,11 @@
                     <div v-if="settings" class="settings">
                         <vs-list>
                             <vs-list-header title="Video devices"></vs-list-header>
-                            <vs-list-item v-for="device in devices" v-if="device.kind == 'video'" :key="device.id" :title="device.label">
+                            <vs-list-item v-for="device in devices" v-if="device.kind == 'video' || device.kind == 'videoinput' " :key="device.id" :title="device.label">
                                 <vs-radio v-model="settings"></vs-radio>
                             </vs-list-item>
                             <vs-list-header title="Audio devices"></vs-list-header>
-                            <vs-list-item v-for="device in devices" v-if="device.kind == 'audio'" :key="device.id" :title="device.label">
+                            <vs-list-item v-for="device in devices" v-if="device.kind == 'audio'  || device.kind == 'audioinput'" :key="device.id" :title="device.label">
                                 <vs-radio v-model="settings"></vs-radio>
                             </vs-list-item>
                         </vs-list>
@@ -94,8 +94,8 @@
             <div class="chat-history">
                 <div class="chat-wrapper">
                     <div class="chat-msg" v-for="msg in messages" :class="msg.right ? 'right' : false" :key="msg.timestamp">
-                        <vs-avatar v-if="!msg.right"  :color="currentRoom.color"></vs-avatar>
-                        <div class="chat-body" :class="msg.right ? 'right' : false" :style="{backgroundColor: msg.right ? false : currentRoom.color}">
+                        <vs-avatar v-if="!msg.right" :color="currentRoom.color"></vs-avatar>
+                        <div class="chat-body" :class="msg.right ? 'right' : false" :style="{ backgroundColor: msg.right ? false : currentRoom.color }">
                             <h4>{{ typeof msg.data === "string" ? JSON.parse(msg.data).message : msg.message }}</h4>
                         </div>
                         <vs-avatar v-if="msg.right" color="#5d5dbf"></vs-avatar>
@@ -215,24 +215,36 @@ export default {
             console.log(this.card);
             this.currentState = this.states.card;
         }
-        navigator.mediaDevices
-            .getUserMedia({ video: true, audio: true })
-            .then((mediaStream) => {
-                console.log(mediaStream.getVideoTracks(), mediaStream.getAudioTracks());
-                let devices = [];
-                mediaStream.getVideoTracks().forEach((track) => {
-                    this.devices.push({ label: track.label, id: track.id, kind: track.kind });
-                });
-                mediaStream.getAudioTracks().forEach((track) => {
-                    this.devices.push({ label: track.label, id: track.id, kind: track.kind });
-                });
-                console.log(this.devices);
+        // navigator.mediaDevices
+        //     .getUserMedia({ video: true, audio: true })
+        //     .then((mediaStream) => {
+        //         console.log(mediaStream.getVideoTracks(), mediaStream.getAudioTracks());
+        //         let devices = [];
+        //         mediaStream.getVideoTracks().forEach((track) => {
+        //             this.devices.push({ label: track.label, id: track.id, kind: track.kind });
+        //         });
+        //         mediaStream.getAudioTracks().forEach((track) => {
+        //             this.devices.push({ label: track.label, id: track.id, kind: track.kind });
+        //         });
+        //         console.log(this.devices);
 
-                // this.devices = mediaStream.getVideoTracks();
-            })
-            .catch((error) => {
-                console.log("Issue with devices", error);
+        //         // this.devices = mediaStream.getVideoTracks();
+        //     })
+        //     .catch((error) => {
+        //         console.error("Issue with devices", error);
+        //     });
+
+        navigator.mediaDevices.enumerateDevices().then((deviceInfos) => {
+            // if (deviceInfo.kind =="audiooutput") {
+            //     this.de
+            // }
+            // console.log(deviceInfos)
+            deviceInfos.forEach((deviceInfo) => {
+                console.log(deviceInfo)
+                this.devices.push({ label: deviceInfo.label, id: deviceInfo.id ? deviceInfo.id : deviceInfo.deviceId, kind: deviceInfo.kind });
             });
+        })
+        .catch(err => console.error("Issue with devices", err));
     },
 };
 </script>

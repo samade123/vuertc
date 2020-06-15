@@ -71,7 +71,14 @@ var app = new Vue({
   },
   watch: {},
   methods: {
-    testMedia() { //this checks camera lsit
+    testMedia(constraints) { //this checks camera lsit
+      console.log("constraints", constraints)
+      constraints.video ? this.mediaStreamConstraints = {
+        video: {deviceId: constraints.video},
+        audio: {deviceId: constraints.audio},
+      }: this.mediaStreamConstraints = {
+        audio: {deviceId: constraints.audio},
+      };
       navigator.mediaDevices.getUserMedia(this.mediaStreamConstraints)
         .then(this.gotLocalMediaStream).catch(this.handleLocalMediaStreamError);
     },
@@ -92,6 +99,9 @@ var app = new Vue({
       this.sendMessageToServer('got user media');
       if (this.isInitiator) {
         if (this.isStarted) { //only add stream to peer connection if peerconnection available
+          if (this.showVideo) {
+            pc.removeStream(this.localStream)
+          }
           pc.addStream(this.localStream);
         } else {
           this.maybeStart(true);

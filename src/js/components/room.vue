@@ -60,7 +60,7 @@ export default {
         setRoom(room) {
             this.currentRoom = room;
             this.$emit("room", room);
-            console.log("room: ", room);
+            // console.log("room: ", room);
             return room;
         },
         // ranHexGen(room) {

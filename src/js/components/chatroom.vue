@@ -16,7 +16,7 @@
                         <div @click="settings = !settings">
                             <i class="material-icons">settings</i>
                         </div>
-                        <div>
+                        <div  @click="changeState(states.video, true)">
                             <i class="material-icons">call</i>
                         </div>
                         <div clas="wow bounceInUp" v-if="roomOpen" @click="changeState(states.video)">
@@ -30,13 +30,24 @@
                 <transition name="height-drop">
                     <div v-if="settings" class="settings">
                         <vs-list>
-                            <vs-list-header title="Video devices"></vs-list-header>
+                            <!-- <vs-list-header title="Video devices"></vs-list-header>
                             <vs-list-item v-for="device in devices" v-if="device.kind == 'video' || device.kind == 'videoinput' " :key="device.id" :title="device.label">
                                 <vs-radio v-model="settings"></vs-radio>
                             </vs-list-item>
                             <vs-list-header title="Audio devices"></vs-list-header>
                             <vs-list-item v-for="device in devices" v-if="device.kind == 'audio'  || device.kind == 'audioinput'" :key="device.id" :title="device.label">
                                 <vs-radio v-model="settings"></vs-radio>
+                            </vs-list-item> -->
+                            <vs-list-header title="Media Settings"></vs-list-header>
+                            <vs-list-item title="Video Devices">
+                                <vs-select v-if="devices.length > 0" class="selectExample" width="350px" v-model="constraints.video" autocomplete>
+                                    <vs-select-item :key="index" :value="item.id" :text="item.label" v-for="(item, index) in devices.filter((device) => device.kind == 'video' || device.kind == 'videoinput')" />
+                                </vs-select>
+                            </vs-list-item>
+                            <vs-list-item title="Audio Devices">
+                                <vs-select v-if="devices.length > 0" class="selectExample" width="350px" v-model="constraints.audio">
+                                    <vs-select-item :key="index" :value="item.id" :text="item.label" v-for="(item, index) in devices.filter((device) => device.kind == 'audio' || device.kind == 'audioinput')" />
+                                </vs-select>
                             </vs-list-item>
                         </vs-list>
                     </div>
@@ -63,7 +74,10 @@
                 </div>
                 <div class="controls">
                     <div class="icons">
-                        <i class="material-icons">videocam</i>
+                        <button @click="changeState(states.video, true)" class="btn">
+                            <i v-if="!noVideo" class="material-icons">videocam</i>
+                            <i v-else class="material-icons">videocam_off</i>
+                        </button>
                     </div>
                     <div class="icons">
                         <button class="btn" v-if="windowWidth > 600" @click="sharing">Share Screen</button>
@@ -151,6 +165,11 @@ export default {
             settings: false,
             devices: [],
             popUp: false,
+            constraints: {
+                audio: "",
+                video: "",
+            },
+            noVideo: false,
         };
     },
     watch: {
@@ -188,11 +207,18 @@ export default {
                 this.currentMessage = "";
             }, 500);
         },
-        changeState(state) {
+        changeState(state, switchVideo = false) {
             console.log("change state: ", state);
             this.currentState = state;
             if (state == this.states.video) {
-                this.$emit("local");
+                if (switchVideo) {
+                    this.noVideo = !this.noVideo;
+                    console.log("Video stream: ", { video: this.noVideo ? false : this.constraints.video, audio: this.constraints.audio });
+                    this.$emit("local", { video: this.noVideo ? false : this.constraints.video, audio: this.constraints.audio });
+                } else {
+                    this.$emit("local", this.constraints);
+                }
+
                 // console.log("kicking off camera");
 
                 // if (this.localCamera) {
@@ -234,17 +260,21 @@ export default {
         //         console.error("Issue with devices", error);
         //     });
 
-        navigator.mediaDevices.enumerateDevices().then((deviceInfos) => {
-            // if (deviceInfo.kind =="audiooutput") {
-            //     this.de
-            // }
-            // console.log(deviceInfos)
-            deviceInfos.forEach((deviceInfo) => {
-                console.log(deviceInfo)
-                this.devices.push({ label: deviceInfo.label, id: deviceInfo.id ? deviceInfo.id : deviceInfo.deviceId, kind: deviceInfo.kind });
-            });
-        })
-        .catch(err => console.error("Issue with devices", err));
+        navigator.mediaDevices
+            .enumerateDevices()
+            .then((deviceInfos) => {
+                // if (deviceInfo.kind =="audiooutput") {
+                //     this.de
+                // }
+                // console.log(deviceInfos)
+                deviceInfos.forEach((deviceInfo) => {
+                    console.log(deviceInfo);
+                    this.devices.push({ label: deviceInfo.label, id: deviceInfo.id ? deviceInfo.id : deviceInfo.deviceId, kind: deviceInfo.kind });
+                });
+                this.devices.length > 0 ? (this.constraints.video = this.devices.filter((device) => device.kind == "video" || device.kind == "videoinput")[0].id) : false;
+                this.devices.length > 0 ? (this.constraints.audio = this.devices.filter((device) => device.kind == "audio" || device.kind == "audioinput")[0].id) : false;
+            })
+            .catch((err) => console.error("Issue with devices", err));
     },
 };
 </script>

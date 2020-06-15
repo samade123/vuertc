@@ -4,11 +4,16 @@ var os = require('os');
 var nodeStatic = require('node-static');
 var http = require('http');
 var socketIO = require('socket.io');
+// const nocache = require('nocache')
 
-var fileServer = new(nodeStatic.Server)();
+
+var fileServer = new(nodeStatic.Server)('./dist',{ cache: false });
 var app = http.createServer(function(req, res) {
   fileServer.serve(req, res);
 }).listen(8887, "localhost");
+
+// app.use(nocache())
+
 
 var io = socketIO.listen(app);
 io.sockets.on('connection', function(socket) {
@@ -67,5 +72,12 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('bye', function(room) {
     console.log(`Peer said bye on room ${room}.`);
+    var clientsInRoom = io.sockets.adapter.rooms[room];
+    console.log("heyyy")
+    var numClients = clientsInRoom ? Object.keys(clientsInRoom.sockets).length : 0;
+    console.log(numClients, clientsInRoom);
+    socket.leave(room, () => {
+      console.log("leaving")
+    });
   });
 });

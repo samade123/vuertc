@@ -5,14 +5,9 @@
   <title>VueRTC</title>
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-  <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/0.6.0/modern-normalize.min.css" integrity="sha256-a9JO7L1jGkja9va1xGMWEJspCfU/b9Vn5u/O5MdnKhw=" crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css" />
   <link rel="icon" type="image/png" href="./site/images/video.svg" />
-  <!-- <link  rel="stylesheet" type="text/css" href="/text-security/text-security.css"> -->
-  <!-- <link rel="stylesheet" type="text/css" href="/style" /> -->
-  <!-- <link rel="stylesheet" type="text/css" href="./site/css/app.css"> -->
+  
 
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -28,7 +23,6 @@
     </header>
     <div class="main-wrapper">
       <div class="main">
-        <!-- <div class="main"  :class="currentPage == pages.header ? 'active' : false"> -->
         <room-strip @room="setRoom($event)" v-if=" !(windowWidth < 600 && currentPage==pages.chatting)" :messages="messages"></room-strip>
         <div class="title" v-if="(windowWidth > 2000 ) && (currentPage == pages.chatting)">
           <header>VUERTC</header>
@@ -46,38 +40,21 @@
               <div @click="stopCamera">Local Camera</div>
             </div>
             <div class="localCam">
-              <!-- <video class="video" :src="displayStream ? URL.createObjectURL(displayStream) : false;"  autoplay playsinline height="150px" ref="screenShare"></video> -->
               <video class="video" autoplay playsinline height="150px" ref="screenShare"></video>
               <div @click="stopCamera">Your Screen</div>
             </div>
-            <!-- </div> -->
           </div>
         </div>
 
         <chat-room v-if="windowWidth > 600 || (windowWidth < 600 && currentPage==pages.chatting)" :current-message="currentMessage" :show-chat="message" :messages="messages" :card="currentPage==pages.chatting" @send="dcSendText($event)"
           :localCamera="localStream" @local="testMedia($event)" :current-room="currentRoom" :room-open="isChannelReady" @message="startPcDataChannel" :show-video="showVideo" @sharing="shareScreen">
-          <!-- <video id="localVideo" class="video" autoplay playsinline height="150px" ref="localVideo"></video> -->
         </chat-room>
       </div>
     </div>
 
-    <!-- <page-success v-if="currentPage == pages.chatting" v-on:stop="stopCamera" ref="success" :media-stream="localStream" :current-url="currentURL" :allow-scroll="allowScroll" :show="show"></page-success> -->
   </main>
 
-  <!-- <script src="/socket.io/socket.io.js"></script> -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
-
-  <script src="https://unpkg.com/@ungap/custom-elements-builtin"></script>
-  <script type="module" src="https://unpkg.com/x-frame-bypass"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js" integrity="sha256-z6FznuNG1jo9PP3/jBjL6P3tvLMtSwiVAowZPOgo56U=" crossorigin="anonymous"></script>
-  <script>
-    new WOW().init();
-
-    function logScrollPos() {
-      // console.log(document.getElementsByClassName("main-body")[0].scrollTop)
-      sessionStorage.setItem("scrollPosition", document.getElementsByClassName("main-body")[0].scrollTop);
-    }
-  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>  
 </body>
 
 </html>

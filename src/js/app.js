@@ -2,8 +2,7 @@ import Vuesax from 'vuesax'
 import 'vuesax/dist/vuesax.css' //Vuesax styles
 import VueWindowSize from 'vue-window-size';
 require('../scss/app.scss');
-
-
+import adapter from 'webrtc-adapter';
 
 window.Vue = require('vue');
 Vue.config.devtools = true

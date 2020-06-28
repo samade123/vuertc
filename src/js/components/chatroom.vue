@@ -9,7 +9,7 @@
             <div class="bottom">
                 <div class="room-func">
                     <div class="room-name">{{ currentRoom.name }}</div>
-                    <div class="chip" v-if="!roomOpen"><vs-chip color="danger">Room Empty</vs-chip></div>
+                    <div class="chip" v-if="!roomOpen"><vs-chip color="danger">Waiting on users to join ...</vs-chip></div>
                     <div class="chip" v-else><vs-chip color="success">Room available</vs-chip></div>
                     <!-- <div class="functions" :style="{opacity: roomOpen ? '1': '0'}"> -->
                     <div class="functions">

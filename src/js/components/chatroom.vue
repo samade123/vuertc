@@ -262,10 +262,8 @@ export default {
         sharing() {
             this.$emit("sharing");
         },
-    },
-    created() {},
-    mounted() {
-        navigator.mediaDevices
+        enumerateDevices(){
+            navigator.mediaDevices
             .enumerateDevices()
             .then((deviceInfos) => {
                 deviceInfos.forEach((deviceInfo) => {
@@ -274,9 +272,16 @@ export default {
                 });
                 this.devices.length > 0 ? (this.constraints.video = this.devices.filter((device) => device.kind == "video" || device.kind == "videoinput")[0].id) : false;
                 this.devices.length > 0 ? (this.constraints.audio = this.devices.filter((device) => device.kind == "audio" || device.kind == "audioinput")[0].id) : false;
-                console.log(this.devices);
+                if (this.constraints.video == false || this.constraints.video.length == 0) {
+                    this.enumerateDevices()
+                }
             })
             .catch((err) => console.error("Issue with devices", err));
+        }
+    },
+    created() {},
+    mounted() {
+        this.enumerateDevices()
         if (this.card) {
             console.log(this.card);
             this.changeState(this.states.card);

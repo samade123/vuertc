@@ -83,6 +83,7 @@
     "vue-window-size": "^0.2.5",
     "vuesax": "^3.11.13",
     "webpack-node-externals": "^1.7.2",
+    "webrtc-adapter": "^7.6.3",
     "wow.js": "^1.2.2"
   }
 }

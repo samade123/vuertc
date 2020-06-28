@@ -235,31 +235,7 @@ export default {
             this.$emit("sharing");
         },
     },
-    created() {},
-    mounted() {
-        if (this.card) {
-            console.log(this.card);
-            this.currentState = this.states.card;
-        }
-        // navigator.mediaDevices
-        //     .getUserMedia({ video: true, audio: true })
-        //     .then((mediaStream) => {
-        //         console.log(mediaStream.getVideoTracks(), mediaStream.getAudioTracks());
-        //         let devices = [];
-        //         mediaStream.getVideoTracks().forEach((track) => {
-        //             this.devices.push({ label: track.label, id: track.id, kind: track.kind });
-        //         });
-        //         mediaStream.getAudioTracks().forEach((track) => {
-        //             this.devices.push({ label: track.label, id: track.id, kind: track.kind });
-        //         });
-        //         console.log(this.devices);
-
-        //         // this.devices = mediaStream.getVideoTracks();
-        //     })
-        //     .catch((error) => {
-        //         console.error("Issue with devices", error);
-        //     });
-
+    created() {
         navigator.mediaDevices
             .enumerateDevices()
             .then((deviceInfos) => {
@@ -273,8 +249,15 @@ export default {
                 });
                 this.devices.length > 0 ? (this.constraints.video = this.devices.filter((device) => device.kind == "video" || device.kind == "videoinput")[0].id) : false;
                 this.devices.length > 0 ? (this.constraints.audio = this.devices.filter((device) => device.kind == "audio" || device.kind == "audioinput")[0].id) : false;
+                console.log(this.devices)
             })
             .catch((err) => console.error("Issue with devices", err));
+    },
+    mounted() {
+        if (this.card) {
+            console.log(this.card);
+            this.currentState = this.states.card;
+        }
     },
 };
 </script>

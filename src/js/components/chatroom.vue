@@ -200,8 +200,8 @@ export default {
             console.log("setting");
             navigator.mediaDevices
                 .getUserMedia({
-                    video: { deviceId: this.constraints.video },
-                    audio: { deviceId: this.constraints.audio },
+                    video: this.constraints.video ?  { deviceId: this.constraints.video } : true,
+                    audio: this.constraints.audio ?  { deviceId: this.constraints.audio } : true,
                 })
                 .then((mediaStream) => {
                     console.log(this.currentState == this.states.card);

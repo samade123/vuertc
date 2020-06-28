@@ -40,7 +40,7 @@
                             </vs-list-item> -->
                             <vs-list-header title="Media Settings"></vs-list-header>
                             <vs-list-item title="Video Devices">
-                                <vs-select v-if="devices.length > 0" class="selectExample" width="220px" v-model="constraints.video" autocomplete>
+                                <vs-select v-if="devices.length > 0" class="selectExample" width="220px" v-model="constraints.video" >
                                     <vs-select-item :key="index" :value="item.id" :text="item.label" v-for="(item, index) in devices.filter((device) => device.kind == 'video' || device.kind == 'videoinput')" />
                                 </vs-select>
                             </vs-list-item>

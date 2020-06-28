@@ -16,7 +16,7 @@
                         <div @click="settings = !settings">
                             <i class="material-icons">settings</i>
                         </div>
-                        <div  @click="changeState(states.video, true)">
+                        <div @click="changeState(states.video, true)">
                             <i class="material-icons">call</i>
                         </div>
                         <div clas="wow bounceInUp" v-if="roomOpen" @click="changeState(states.video)">
@@ -29,18 +29,13 @@
                 </div>
                 <transition name="height-drop">
                     <div v-if="settings" class="settings">
+                        <div class="video">
+                            <video class="video" autoplay playsinline width="250" id="testVideo" ref="testVideo"></video>
+                        </div>
                         <vs-list>
-                            <!-- <vs-list-header title="Video devices"></vs-list-header>
-                            <vs-list-item v-for="device in devices" v-if="device.kind == 'video' || device.kind == 'videoinput' " :key="device.id" :title="device.label">
-                                <vs-radio v-model="settings"></vs-radio>
-                            </vs-list-item>
-                            <vs-list-header title="Audio devices"></vs-list-header>
-                            <vs-list-item v-for="device in devices" v-if="device.kind == 'audio'  || device.kind == 'audioinput'" :key="device.id" :title="device.label">
-                                <vs-radio v-model="settings"></vs-radio>
-                            </vs-list-item> -->
                             <vs-list-header title="Media Settings"></vs-list-header>
                             <vs-list-item title="Video Devices">
-                                <vs-select v-if="devices.length > 0" class="selectExample" width="220px" v-model="constraints.video" >
+                                <vs-select v-if="devices.length > 0" class="selectExample" width="220px" v-model="constraints.video">
                                     <vs-select-item :key="index" :value="item.id" :text="item.label" v-for="(item, index) in devices.filter((device) => device.kind == 'video' || device.kind == 'videoinput')" />
                                 </vs-select>
                             </vs-list-item>
@@ -166,17 +161,22 @@ export default {
             devices: [],
             popUp: false,
             constraints: {
-                audio: "",
-                video: "",
+                audio: false,
+                video: false,
             },
             noVideo: false,
         };
     },
     watch: {
+        constraints: {
+            deep: true,
+            immediate: true,
+            handler: "setCamera",
+        },
         card() {
             if (this.card) {
                 console.log(this.card);
-                this.currentState = this.states.card;
+                this.changeState(this.states.card);
             }
         },
         localCamera() {
@@ -196,6 +196,27 @@ export default {
         //   deep: true,
     },
     methods: {
+        setCamera() {
+            console.log("setting");
+            navigator.mediaDevices
+                .getUserMedia({
+                    video: { deviceId: this.constraints.video },
+                    audio: { deviceId: this.constraints.audio },
+                })
+                .then((mediaStream) => {
+                    console.log(this.currentState == this.states.card);
+                    this.testStream = mediaStream;
+
+                    if (this.currentState == this.states.card) {
+                        setTimeout(() => {
+                            document.getElementById("testVideo").srcObject = mediaStream;
+                        }, 500);
+                    }
+                })
+                .catch((e) => {
+                    console.error("getUserMedia() error: " + e.name, e);
+                });
+        },
         log(event) {
             console.log(event.target);
         },
@@ -229,35 +250,38 @@ export default {
                 console.log("messaging from chatroom");
 
                 this.$emit("message");
+            } else if (state == this.states.card) {
+                this.settings = true;
+                setTimeout(() => {
+                    document.getElementById("testVideo").srcObject = this.testStream;
+
+                    this.setCamera();
+                }, 2000);
             }
         },
         sharing() {
             this.$emit("sharing");
         },
     },
-    created() {
+    created() {},
+    mounted() {
         navigator.mediaDevices
             .enumerateDevices()
             .then((deviceInfos) => {
-                // if (deviceInfo.kind =="audiooutput") {
-                //     this.de
-                // }
-                // console.log(deviceInfos)
                 deviceInfos.forEach((deviceInfo) => {
                     console.log(deviceInfo);
                     this.devices.push({ label: deviceInfo.label, id: deviceInfo.id ? deviceInfo.id : deviceInfo.deviceId, kind: deviceInfo.kind });
                 });
                 this.devices.length > 0 ? (this.constraints.video = this.devices.filter((device) => device.kind == "video" || device.kind == "videoinput")[0].id) : false;
                 this.devices.length > 0 ? (this.constraints.audio = this.devices.filter((device) => device.kind == "audio" || device.kind == "audioinput")[0].id) : false;
-                console.log(this.devices)
+                console.log(this.devices);
             })
             .catch((err) => console.error("Issue with devices", err));
-    },
-    mounted() {
         if (this.card) {
             console.log(this.card);
-            this.currentState = this.states.card;
+            this.changeState(this.states.card);
         }
+        // this.setCamera()
     },
 };
 </script>

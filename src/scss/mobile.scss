@@ -13,6 +13,9 @@
     }
 
     .chat-card {
+       .bottom .settings {
+         flex-direction: column;
+       }
       .top {
         .quick-glance {
           width: 80px;

@@ -196,15 +196,16 @@ export default {
         //   deep: true,
     },
     methods: {
-        setCamera() {
-            console.log("setting");
-            navigator.mediaDevices
+        setCamera() {            navigator.mediaDevices
                 .getUserMedia({
-                    video: this.constraints.video ?  { deviceId: this.constraints.video } : true,
-                    audio: this.constraints.audio ?  { deviceId: this.constraints.audio } : true,
+                    video: this.constraints.video ? { deviceId: this.constraints.video } : true,
+                    audio: this.constraints.audio ? { deviceId: this.constraints.audio } : true,
                 })
                 .then((mediaStream) => {
-                    console.log(this.currentState == this.states.card);
+                    if (this.constraints.video == false || this.constraints.video.length == "0"){
+                        this.enumerateDevices()
+                    }
+                   
                     this.testStream = mediaStream;
 
                     if (this.currentState == this.states.card) {
@@ -218,18 +219,18 @@ export default {
                 });
         },
         log(event) {
-            console.log(event.target);
+            console.debug(event.target);
         },
         send() {
             this.$emit("send", this.currentMessage);
             // this.currentState = this.states.card;
-            console.log("comp send", this.currentMessage);
+            console.debug("comp send", this.currentMessage);
             setTimeout(() => {
                 this.currentMessage = "";
             }, 500);
         },
         changeState(state, switchVideo = false) {
-            console.log("change state: ", state);
+            console.debug("change state: ", state);
             this.currentState = state;
             if (state == this.states.video) {
                 if (switchVideo) {
@@ -262,28 +263,26 @@ export default {
         sharing() {
             this.$emit("sharing");
         },
-        enumerateDevices(){
+        enumerateDevices() {
+            this.devices = []
             navigator.mediaDevices
-            .enumerateDevices()
-            .then((deviceInfos) => {
-                deviceInfos.forEach((deviceInfo) => {
-                    console.log(deviceInfo);
-                    this.devices.push({ label: deviceInfo.label, id: deviceInfo.id ? deviceInfo.id : deviceInfo.deviceId, kind: deviceInfo.kind });
-                });
-                this.devices.length > 0 ? (this.constraints.video = this.devices.filter((device) => device.kind == "video" || device.kind == "videoinput")[0].id) : false;
-                this.devices.length > 0 ? (this.constraints.audio = this.devices.filter((device) => device.kind == "audio" || device.kind == "audioinput")[0].id) : false;
-                if (this.constraints.video == false || this.constraints.video.length == 0) {
-                    this.enumerateDevices()
-                }
-            })
-            .catch((err) => console.error("Issue with devices", err));
-        }
+                .enumerateDevices()
+                .then((deviceInfos) => {
+                    deviceInfos.forEach((deviceInfo) => {
+                        console.debug(deviceInfo);
+                        this.devices.push({ label: deviceInfo.label, id: deviceInfo.id ? deviceInfo.id : deviceInfo.deviceId, kind: deviceInfo.kind });
+                    });
+                    this.devices.length > 0 ? (this.constraints.video = this.devices.filter((device) => device.kind == "video" || device.kind == "videoinput")[0].id) : false;
+                    this.devices.length > 0 ? (this.constraints.audio = this.devices.filter((device) => device.kind == "audio" || device.kind == "audioinput")[0].id) : false;
+                })
+                .catch((err) => console.error("Issue with devices", err));
+        },
     },
     created() {},
     mounted() {
-        this.enumerateDevices()
+        this.enumerateDevices();
         if (this.card) {
-            console.log(this.card);
+            console.debug(this.card);
             this.changeState(this.states.card);
         }
         // this.setCamera()

@@ -79,14 +79,14 @@ var app = new Vue({
         audio: {deviceId: constraints.audio},
       };
       navigator.mediaDevices.getUserMedia(this.mediaStreamConstraints)
-        .then(this.gotLocalMediaStream).catch(this.handleLocalMediaStreamError);
+        .then(this.gotLocalMediaStream)
+        .catch(this.handleLocalMediaStreamError);
     },
     gotLocalMediaStream(mediaStream) { //this sets the local video
       console.log('Getting user media with constraints', this.mediaStreamConstraints);
 
       this.localStream = mediaStream;
       if (this.dataChannel) { //dtachannel shoudve been created by now but if not create data channel first
-        console.log("data channnellijdqpijfopqekf[rpqe]pfqe#[f;#qe]]#")
         this.dcSendText("none", "video")
       } else {
         console.log("dc", this.dataChannel, "peer connection", pc)
@@ -103,7 +103,7 @@ var app = new Vue({
           }
           pc.addStream(this.localStream);
         } else {
-          this.maybeStart(true);
+          this.maybeStart(true); // this starts peer connection if the peer cconnection hasn't already been started
         }
       } else if (this.isStarted) {
         pc.addStream(this.localStream); //sends local sream to other peer 
@@ -135,7 +135,7 @@ var app = new Vue({
       console.debug('>>>>>>> maybeStart() this.isStarted: ', this.isStarted, "localStream: ", this.localStream, "channelReady: ", this.isChannelReady);
       if (!this.isStarted && this.isChannelReady) {
         console.debug('>>>>>> creating peer connection');
-        this.createPeerConnection();                        //This example detaches the adding of the local stream from creating a peer connection unlike most examples
+        this.createPeerConnection();  //This example detaches the adding of the local stream from creating a peer connection unlike most examples
         // if (typeof this.localStream !== 'undefined') {
         //   console.log("localstream", this.localStream)
         //   pc.addStream(this.localStream);
@@ -251,8 +251,7 @@ var app = new Vue({
 
       if (this.shareRemoteScreen) {
         this.remoteScreen = event.stream;
-        // this.screenShare = document.getElementById("screenShare")
-        // this.screenShare.srcObject = this.remoteScreen;
+        
         this.remoteVideo.srcObject = this.remoteScreen;
 
       } else {

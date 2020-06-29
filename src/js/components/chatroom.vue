@@ -196,16 +196,17 @@ export default {
         //   deep: true,
     },
     methods: {
-        setCamera() {            navigator.mediaDevices
+        setCamera() {
+            navigator.mediaDevices
                 .getUserMedia({
                     video: this.constraints.video ? { deviceId: this.constraints.video } : true,
                     audio: this.constraints.audio ? { deviceId: this.constraints.audio } : true,
                 })
                 .then((mediaStream) => {
-                    if (this.constraints.video == false || this.constraints.video.length == "0"){
-                        this.enumerateDevices()
+                    if (this.constraints.video == false || this.constraints.video.length == "0") {
+                        this.enumerateDevices();
                     }
-                   
+
                     this.testStream = mediaStream;
 
                     if (this.currentState == this.states.card) {
@@ -264,7 +265,7 @@ export default {
             this.$emit("sharing");
         },
         enumerateDevices() {
-            this.devices = []
+            this.devices = [];
             navigator.mediaDevices
                 .enumerateDevices()
                 .then((deviceInfos) => {

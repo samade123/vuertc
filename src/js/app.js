@@ -184,7 +184,7 @@ var app = new Vue({
     },
     createPeerConnection() {
       try {
-        pc = new RTCPeerConnection(null);
+        pc = new RTCPeerConnection(this.pcConfig);
         pc.onicecandidate = this.handleIceCandidate;
         pc.onaddstream = this.handleRemoteStreamAdded;
         pc.onremovestream = this.handleRemoteStreamRemoved;
